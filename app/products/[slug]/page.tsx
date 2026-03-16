@@ -100,7 +100,7 @@ export default function ProductDetailsPage() {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-gray-50 pt-24 pb-12">
+      <div className="min-h-screen bg-gray-50  pb-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Breadcrumb */}
           <motion.div
@@ -178,23 +178,23 @@ export default function ProductDetailsPage() {
                       Quantity
                     </label>
                     <div className="flex items-center space-x-4">
-                      <button
+                      <Button
                         onClick={() => setQuantity(Math.max(1, quantity - 1))}
                         className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100"
                       >
                         −
-                      </button>
+                      </Button>
                       <span className="text-2xl font-semibold w-12 text-center">
                         {quantity}
                       </span>
-                      <button
+                      <Button
                         onClick={() =>
                           setQuantity(Math.min(product.stock, quantity + 1))
                         }
                         className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100"
                       >
                         +
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 )}

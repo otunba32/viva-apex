@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { PageTransition } from '@/components/PageTransition';
 import { useCart } from '@/context/CartContext';
 import { Button } from '@/components/ui/button';
+import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft, Trash2, Plus, Minus } from 'lucide-react';
 
@@ -85,11 +86,19 @@ export default function CartPage() {
                     >
                       {/* Product Image */}
                       <div className="w-24 h-24 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
-                        <img
+                        {/* <img
                           src={item.image}
                           alt={item.name}
                           className="w-full h-full object-cover"
-                        />
+                        /> */}
+                        <Image
+                                        src={item.image}
+                                        alt={item.name}
+                                        fill
+                                        priority
+                                        sizes="(max-width: 1024px) 100vw, 50vw"
+                                        className="object-cover"
+                                      />
                       </div>
 
                       {/* Product Details */}
@@ -105,34 +114,34 @@ export default function CartPage() {
 
                         {/* Quantity Control */}
                         <div className="flex items-center space-x-3 mt-4">
-                          <button
+                          <Button
                             onClick={() =>
                               updateQuantity(item.id, Math.max(1, item.quantity - 1))
                             }
                             className="p-1 border border-gray-300 rounded hover:bg-gray-100 transition-colors"
                           >
                             <Minus className="w-4 h-4" />
-                          </button>
+                          </Button>
                           <span className="text-lg font-semibold w-8 text-center">
                             {item.quantity}
                           </span>
-                          <button
+                          <Button
                             onClick={() => updateQuantity(item.id, item.quantity + 1)}
                             className="p-1 border border-gray-300 rounded hover:bg-gray-100 transition-colors"
                           >
                             <Plus className="w-4 h-4" />
-                          </button>
+                          </Button>
                         </div>
                       </div>
 
                       {/* Remove Button */}
                       <div className="flex flex-col items-end justify-between">
-                        <button
+                        <Button
                           onClick={() => removeItem(item.id)}
                           className="text-red-600 hover:text-red-700 transition-colors"
                         >
                           <Trash2 className="w-5 h-5" />
-                        </button>
+                        </Button>
                         <p className="text-xl font-bold text-gray-900">
                           ₦{(item.price * item.quantity).toLocaleString()}
                         </p>
@@ -148,12 +157,12 @@ export default function CartPage() {
                   transition={{ duration: 0.5, delay: 0.2 }}
                   className="mt-6"
                 >
-                  <button
+                  <Button
                     onClick={clearCart}
                     className="text-red-600 hover:text-red-700 font-semibold text-sm"
                   >
                     Clear Cart
-                  </button>
+                  </Button>
                 </motion.div>
               </div>
 

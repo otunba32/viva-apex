@@ -6,6 +6,7 @@ import { Fish, Drumstick, Beef, Search, SlidersHorizontal } from 'lucide-react'
 import { PageTransition } from '@/components/PageTransition'
 import { StaggerContainer, StaggerItem } from '@/components/StaggerContainer'
 import { ProductCard } from '@/components/ProductCard'
+import { Button } from '@/components/ui/button'
 
 interface Product {
   id: string
@@ -177,7 +178,7 @@ export default function ProductsPage() {
               const Icon = filter.icon
 
               return (
-                <button
+                <Button
                   key={filter.key}
                   type="button"
                   onClick={() => setActiveFilter(filter.key)}
@@ -206,7 +207,7 @@ export default function ProductsPage() {
                   >
                     {counts[filter.key]}
                   </span>
-                </button>
+                </Button>
               ) 
             })}
           </motion.div>
@@ -246,7 +247,7 @@ export default function ProductsPage() {
                 <p className="mt-3 text-slate-600">
                   Try switching categories or searching with a different name.
                 </p>
-                <button
+                <Button
                   type="button"
                   onClick={() => {
                     setActiveFilter('all')
@@ -256,7 +257,7 @@ export default function ProductsPage() {
                   style={{ backgroundColor: brand.red }}
                 >
                   Reset filters
-                </button>
+                </Button>
               </div>
             </div>
           )}

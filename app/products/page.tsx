@@ -113,7 +113,7 @@ export default function ProductsPage() {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-gradient-to-b from-orange-50/40 via-white to-white pt-24 pb-14">
+      <div className="min-h-screen bg-gradient-to-b from-orange-50/40 via-white to-white pt-6 pb-14">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: -18 }}

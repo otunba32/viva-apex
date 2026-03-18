@@ -9,7 +9,7 @@ export default function AboutSection() {
         <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[0.95fr_1.05fr] lg:px-8">
           <div className="relative overflow-hidden rounded-[2rem] border border-orange-100 bg-white p-3 shadow-xl">
             <div className="relative h-[420px] overflow-hidden rounded-[1.5rem] bg-slate-100">
-              <Image src="/products/turkey-wings.jpg" alt="About Viva Apex Frozen Foods" fill sizes="(max-width: 1024px) 100vw, 45vw" className="object-cover" />
+              <Image src="/products/turkey-fullwings.jpg" alt="About Viva Apex Frozen Foods" fill sizes="(max-width: 1024px) 100vw, 45vw" className="object-cover" />
             </div>
           </div>
 

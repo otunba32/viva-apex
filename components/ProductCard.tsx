@@ -88,8 +88,8 @@ export function ProductCard({
               {stock > 0 ? `${stock} in stock` : 'Out of stock'}
             </p>
             <div className="flex items-center justify-between">
-              <span className="text-2xl font-bold text-blue-600">
-                ₦{price.toLocaleString()}
+              <span className="text-xl font-bold text-green-600">
+                ₦{price.toLocaleString()}/ kg
               </span>
             </div>
           </div>
@@ -98,7 +98,7 @@ export function ProductCard({
           <div className="px-4 pb-4" onClick={handleAddToCart}>
             <Button
               disabled={stock === 0}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+              className="w-full bg-blue-600 hover:bg-[#A61E1E] text-white"
             >
               <ShoppingCart className="w-4 h-4 mr-2" />
               Add to Cart

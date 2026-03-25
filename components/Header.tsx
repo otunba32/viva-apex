@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { brand } from '@/lib/home-data'
+import CartIcon from './CartIcon'
 
 export default function Header() {
   return (
@@ -25,16 +26,16 @@ export default function Header() {
         </Link>
 
         <nav className="hidden items-center gap-10 md:flex">
-          <Link href="/" className="text-lg font-semibold text-slate-700 transition hover:text-slate-900">
+          <Link href="/" className="text-md font-semibold text-slate-700 transition hover:text-slate-900">
             Home
           </Link>
-          <Link href="/products" className="text-lg font-semibold text-slate-700 transition hover:text-slate-900">
+          <Link href="/products" className="text-md font-semibold text-slate-700 transition hover:text-slate-900">
             Products
           </Link>
-          <a href="#about" className="text-lg font-semibold text-slate-700 transition hover:text-slate-900">
+          <a href="#about" className="text-md font-semibold text-slate-700 transition hover:text-slate-900">
             About Us
           </a>
-          <a href="#contact" className="text-lg font-semibold text-slate-700 transition hover:text-slate-900">
+          <a href="#contact" className="text-md font-semibold text-slate-700 transition hover:text-slate-900">
             Contact Us
           </a>
         </nav>
@@ -58,6 +59,9 @@ export default function Header() {
           >
             Shop Now
           </Link>
+        </div>
+        <div className="flex items-center gap-6">
+          <CartIcon />
         </div>
       </div>
     </header>

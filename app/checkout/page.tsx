@@ -120,9 +120,11 @@ export default function CheckoutPage() {
             transition={{ duration: 0.5 }}
             className="mb-8"
           >
-            <Link href="/cart" className="flex items-center text-blue-600 hover:text-blue-700 mb-6">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Cart
+            <Link href="/cart" className="flex items-center text-black-600 hover:text-gray-700 mb-6">
+              <Button variant="outline" className="border-gray-300 bg-white">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Cart
+              </Button>
             </Link>
             <h1 className="text-4xl font-bold text-gray-900">Checkout</h1>
           </motion.div>
@@ -227,7 +229,7 @@ export default function CheckoutPage() {
                           onChange={handleInputChange}
                           required
                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          placeholder="Lagos"
+                          placeholder="Ibadan"
                         />
                       </div>
                       <div>
@@ -241,7 +243,7 @@ export default function CheckoutPage() {
                           onChange={handleInputChange}
                           required
                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          placeholder="Lagos State"
+                          placeholder="Oyo State"
                         />
                       </div>
                     </div>
@@ -297,7 +299,7 @@ export default function CheckoutPage() {
                         <p className="text-gray-700 font-medium">{item.name}</p>
                         <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
                       </div>
-                      <p className="font-semibold text-gray-900">
+                      <p className="font-semibold text-green-600">
                         ₦{(item.price * item.quantity).toLocaleString()}
                       </p>
                     </div>
@@ -308,7 +310,7 @@ export default function CheckoutPage() {
                 <div className="mb-6">
                   <div className="flex justify-between mb-3">
                     <p className="text-gray-600">Subtotal</p>
-                    <p className="font-semibold">₦{total.toLocaleString()}</p>
+                    <p className="font-semibold text-green-600">₦{total.toLocaleString()}</p>
                   </div>
                   <div className="flex justify-between mb-3">
                     <p className="text-gray-600">Shipping</p>
@@ -316,7 +318,7 @@ export default function CheckoutPage() {
                   </div>
                   <div className="flex justify-between pt-3 border-t border-gray-200">
                     <p className="font-bold text-gray-900">Total</p>
-                    <p className="text-2xl font-bold text-blue-600">
+                    <p className="text-2xl font-bold text-green-600">
                       ₦{total.toLocaleString()}
                     </p>
                   </div>

@@ -18,7 +18,7 @@ export default function AboutSection() {
               About Us
             </p>
             <h2 className="mt-2 text-3xl font-black tracking-tight sm:text-4xl">
-              A trusted frozen food brand serving Bodija and beyond
+              A trusted frozen food brand serving Oyo State and beyond
             </h2>
             <p className="mt-5 text-base leading-8 text-slate-600">
               VIVA APEX FROZEN FOODS supplies quality frozen chicken, turkey and fish to homes,

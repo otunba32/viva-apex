@@ -20,11 +20,11 @@ export default function HeroSection() {
       <div className="relative mx-auto grid min-h-[92vh] max-w-7xl items-center gap-12 px-4 py-14 sm:px-6 lg:grid-cols-2 lg:px-8 lg:py-20">
         <motion.div initial="hidden" animate="visible" variants={container} className="max-w-2xl text-white">
           <motion.h1 variants={item} className="text-4xl font-black leading-tight tracking-tight sm:text-5xl lg:text-6xl">
-            Premium frozen foods for homes, events and businesses.
+            Premium fresh foods for homes, events and businesses.
           </motion.h1>
 
           <motion.p variants={item} className="mt-5 max-w-xl text-base leading-7 text-white/85 sm:text-lg">
-            Shop fresh frozen chicken, turkey and fish from a trusted brand.
+            Shop fresh chicken, turkey and fish from a trusted brand.
             Order easily, buy in units or bulk, and enjoy a clean, more modern way to restock.
           </motion.p>
 
@@ -83,7 +83,7 @@ export default function HeroSection() {
             <div className="relative h-[520px] overflow-hidden rounded-[1.6rem] bg-slate-100">
               <Image
                 src="/products/full-chicken.jpg"
-                alt="Viva Apex frozen foods"
+                alt="Viva Apex fresh foods"
                 fill
                 priority
                 sizes="(max-width: 1024px) 100vw, 50vw"

@@ -22,7 +22,7 @@ interface Product {
   weight?: string | null
   unit?: string | null
   nutrients?: string | null
-  storage?: string | null
+  // storage?: string | null
   images?: string[]
   available?: boolean
 }
@@ -190,19 +190,19 @@ export default function ProductDetailsPage() {
                     </div>
                   )}
 
-                  {product.storage && (
+                  {/* {product.storage && (
                     <div>
                       <p className="text-sm text-gray-500">Storage</p>
                       <p className="font-medium leading-7 text-gray-900">
                         {product.storage}
                       </p>
                     </div>
-                  )}
+                  )} */}
 
                   {!product.weight &&
                     !product.unit &&
                     !product.nutrients &&
-                    !product.storage && (
+                     (
                       <p className="text-gray-500">
                         More product details will be available soon.
                       </p>
@@ -326,7 +326,7 @@ export default function ProductDetailsPage() {
 
               
 
-              <div className="rounded-2xl bg-red-50 p-6">
+              {/* <div className="rounded-2xl bg-red-50 p-6">
                 <h3 className="mb-4 font-semibold text-gray-900">Why Choose Us?</h3>
                 <ul className="space-y-2 text-gray-700">
                   <li className="flex items-start">
@@ -346,7 +346,7 @@ export default function ProductDetailsPage() {
                     Friendly customer support
                   </li>
                 </ul>
-              </div>
+              </div> */}
             </motion.div>
           </div>
         </div>

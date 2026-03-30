@@ -26,7 +26,6 @@ model Product {
   unit        String?
   description String?
   nutrients   String?
-  storage     String?
   featured    Boolean @default(false)
   available   Boolean @default(true)
 
@@ -40,6 +39,7 @@ model Order {
   id            String      @id @default(cuid())
   customerName  String
   customerEmail String
+  customerPhone String
   address       String
   city          String
   totalAmount   Int

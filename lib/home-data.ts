@@ -10,7 +10,7 @@ export const brand = {
 export const categories = [
   {
     title: 'Chicken',
-    subtitle: 'Fresh frozen chicken cuts',
+    subtitle: 'Fresh chicken cuts',
     href: '/products?category=chicken',
     image: '/products/chicken-laps1.jpg',
   },
@@ -22,7 +22,7 @@ export const categories = [
   },
   {
     title: 'Fish',
-    subtitle: 'Clean, affordable frozen fish',
+    subtitle: 'Clean, affordable fresh fish',
     href: '/products?category=fish',
     image: '/products/turkey-shoulder.jpg',
   },
@@ -55,8 +55,8 @@ export const featuredProducts = [
 export const benefits = [
   {
     icon: Snowflake,
-    title: 'Properly Frozen',
-    text: 'Products handled with freshness in mind from storage to delivery.',
+    title: 'Fresh Products',
+    text: 'Products handled with freshness in mind from farm to delivery.',
   },
   {
     icon: Truck,

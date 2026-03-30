@@ -2,7 +2,8 @@
 
 import Link from 'next/link'
 import { brand } from '@/lib/home-data'
-import CartIcon from './CartIcon'
+import { CartIcon } from './CartIcon'
+// import CartIcon from './CartIcon'
 
 export default function Header() {
   return (
@@ -20,7 +21,7 @@ export default function Header() {
               VIVA APEX
             </p>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-              Frozen Foods
+              Fresh Foods
             </p>
           </div>
         </Link>

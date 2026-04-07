@@ -21,7 +21,7 @@ export default function Header() {
               VIVA APEX
             </p>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-              Fresh Foods
+              Frozen Foods
             </p>
           </div>
         </Link>

@@ -25,8 +25,9 @@ async function main() {
         category: 'chicken',
         weight: '1.8kg - 2kg',
         description:
-          'Premium whole chicken, properly cleaned and packaged for home cooking, family meals and restaurants.',
+          'Premium frozen whole chicken, properly cleaned and packaged for home cooking, family meals and restaurants.',
         nutrients: 'Protein, Iron, Vitamin B12',
+        storage: 'Keep frozen at -18°C. Do not refreeze after thawing.',
       },
       {
         name: 'Chicken Laps',
@@ -37,8 +38,9 @@ async function main() {
         category: 'chicken',
         weight: '1kg pack',
         description:
-          'Fresh chicken laps ideal for grilling, frying and everyday meals.',
+          'Fresh frozen chicken laps ideal for grilling, frying and everyday meals.',
         nutrients: 'Protein, Iron, Vitamin B6',
+        storage: 'Store frozen below -18°C.',
       },
       {
         name: 'Chicken Breast',
@@ -49,7 +51,7 @@ async function main() {
         category: 'chicken',
         weight: '1kg pack',
         description:
-          'Clean chicken breast perfect for healthy meals, grilling and stir-fry dishes.',
+          'Clean frozen chicken breast perfect for healthy meals, grilling and stir-fry dishes.',
         nutrients: 'Protein, Iron, Zinc',
       },
       {
@@ -61,7 +63,7 @@ async function main() {
         category: 'chicken',
         weight: '1kg pack',
         description:
-          'chicken drumsticks rich in flavour and perfect for grilling, frying and stews.',
+          'Frozen chicken drumsticks rich in flavour and perfect for grilling, frying and stews.',
         nutrients: 'Protein, Iron, Vitamin B12',
       },
       {
@@ -85,7 +87,7 @@ async function main() {
         category: 'chicken',
         weight: '1kg pack',
         description:
-          'Fresh chicken gizzards ideal for pepper soup, stir-fry and local dishes.',
+          'Fresh frozen chicken gizzards ideal for pepper soup, stir-fry and local dishes.',
         nutrients: 'Protein, Iron, Zinc',
       },
       {
@@ -97,7 +99,7 @@ async function main() {
         category: 'chicken',
         weight: '1kg pack',
         description:
-          'chicken wings great for grills, parties, sauces and everyday family meals.',
+          'Frozen chicken wings great for grills, parties, sauces and everyday family meals.',
         nutrients: 'Protein, Iron, Vitamin B12',
       },
       {
@@ -109,7 +111,7 @@ async function main() {
         category: 'chicken',
         weight: '1kg pack',
         description:
-          'chicken neck suitable for soups, stock preparation and traditional meals.',
+          'Frozen chicken neck suitable for soups, stock preparation and traditional meals.',
         nutrients: 'Protein, Iron',
       },
       {
@@ -121,7 +123,7 @@ async function main() {
         category: 'chicken',
         weight: '1kg pack',
         description:
-          'chicken feet ideal for soups, stock and specialty cooking.',
+          'Frozen chicken feet ideal for soups, stock and specialty cooking.',
         nutrients: 'Protein, Collagen, Iron',
       },
       {
@@ -133,7 +135,7 @@ async function main() {
         category: 'chicken',
         weight: '1kg pack',
         description:
-          'chicken head suitable for local soups, stock and traditional dishes.',
+          'Frozen chicken head suitable for local soups, stock and traditional dishes.',
         nutrients: 'Protein, Iron',
       },
       {
@@ -145,7 +147,7 @@ async function main() {
         category: 'chicken',
         weight: '1kg pack',
         description:
-          'chicken heart suitable for grills, pepper soup and traditional recipes.',
+          'Frozen chicken heart suitable for grills, pepper soup and traditional recipes.',
         nutrients: 'Protein, Iron, Vitamin B12',
       },
 
@@ -159,7 +161,7 @@ async function main() {
         category: 'turkey',
         weight: '1kg pack',
         description:
-          'Fresh turkey full wings suitable for soups, grilling and hearty meals.',
+          'Fresh frozen turkey full wings suitable for soups, grilling and hearty meals.',
         nutrients: 'Protein, Iron, Vitamin B12',
       },
       {
@@ -171,7 +173,7 @@ async function main() {
         category: 'turkey',
         weight: '1kg pack',
         description:
-          'turkey mid wings perfect for roasting, soups and home cooking.',
+          'Frozen turkey mid wings perfect for roasting, soups and home cooking.',
         nutrients: 'Protein, Iron, Vitamin B12',
       },
       {
@@ -183,7 +185,7 @@ async function main() {
         category: 'turkey',
         weight: '1kg pack',
         description:
-          'Fresh turkey shoulder ideal for stews, soups and traditional dishes.',
+          'Fresh frozen turkey shoulder ideal for stews, soups and traditional dishes.',
         nutrients: 'Protein, Iron, Zinc',
       },
       {
@@ -195,7 +197,7 @@ async function main() {
         category: 'turkey',
         weight: '1kg pack',
         description:
-          'turkey laps with rich flavour, suitable for grills and family meals.',
+          'Frozen turkey laps with rich flavour, suitable for grills and family meals.',
         nutrients: 'Protein, Iron, Vitamin B12',
       },
       {
@@ -207,7 +209,7 @@ async function main() {
         category: 'turkey',
         weight: '1kg pack',
         description:
-          'Fresh turkey finger cuts suitable for soups, pepper soup and local dishes.',
+          'Fresh frozen turkey finger cuts suitable for soups, pepper soup and local dishes.',
         nutrients: 'Protein, Iron',
       },
       {
@@ -219,7 +221,7 @@ async function main() {
         category: 'turkey',
         weight: '1kg pack',
         description:
-          'turkey gizzards ideal for stir-fry, grills and traditional meals.',
+          'Frozen turkey gizzards ideal for stir-fry, grills and traditional meals.',
         nutrients: 'Protein, Iron, Zinc',
       },
 
@@ -233,7 +235,7 @@ async function main() {
         category: 'fish',
         weight: '1kg pack',
         description:
-          'Fresh ice fish suitable for soups, stews and everyday cooking.',
+          'Fresh frozen ice fish suitable for soups, stews and everyday cooking.',
         nutrients: 'Protein, Omega-3, Vitamin D',
       },
       {
@@ -245,7 +247,7 @@ async function main() {
         category: 'fish',
         weight: '1kg pack',
         description:
-          'croaker fish perfect for grilling, frying and pepper soup dishes.',
+          'Frozen croaker fish perfect for grilling, frying and pepper soup dishes.',
         nutrients: 'Protein, Omega-3, Vitamin D',
       },
       {
@@ -257,7 +259,7 @@ async function main() {
         category: 'fish',
         weight: '1kg pack',
         description:
-          'Fresh titus fish ideal for stews, frying and traditional Nigerian meals.',
+          'Fresh frozen titus fish ideal for stews, frying and traditional Nigerian meals.',
         nutrients: 'Protein, Omega-3, Vitamin D',
       },
     ],

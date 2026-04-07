@@ -43,6 +43,8 @@ export default function ProductImageGallery({
     })
   }
 
+  const [useCover, setUseCover] = useState(true);
+
   const handleMouseLeave = () => {
     setZoomStyle({
       transformOrigin: 'center center',
@@ -55,20 +57,22 @@ export default function ProductImageGallery({
       <div className="space-y-4">
         <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
           <div
-            className="relative h-[360px] w-full cursor-zoom-in overflow-hidden bg-slate-100 sm:h-[460px] lg:h-[520px]"
+            className="relative h-full w-full cursor-zoom-in overflow-hidden bg-slate-100 sm:h-[460px] lg:h-[480px]"
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
             onClick={() => setIsOpen(true)}
           >
-            <Image
-              src={activeImage}
-              alt={alt}
-              fill
-              priority
-              sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-cover transition-transform duration-200 ease-out"
-              style={zoomStyle}
-            />
+          {/* const [useCover, setUseCover] = useState(true); */}
+
+<Image
+  src={activeImage}
+  alt={alt}
+  fill
+  priority
+  sizes="(max-width: 1024px) 100vw, 50vw"
+  className="object-cover scale-100 transition-transform duration-200 ease-out"
+  style={zoomStyle}
+/>
 
             <button
               type="button"

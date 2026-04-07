@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
 
@@ -46,8 +44,9 @@ export async function POST(request: Request) {
       },
       body: JSON.stringify({
         email: order.customerEmail,
-        amount: Math.round(order.totalAmount * 100), // Paystack uses cents
-        reference: orderId,
+        // totalAmount is stored in Naira in the DB
+        // Paystack requires kobo, so multiply by 100
+        amount: Math.round(order.totalAmount * 100), // Paystack uses kobo (1 Naira = 100 kobo)    
         metadata: {
           order_id: orderId,
           customer_name: order.customerName,

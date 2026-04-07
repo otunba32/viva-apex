@@ -5,9 +5,9 @@ export default function Footer() {
     <footer className="border-t border-slate-200 bg-white">
         <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-2 lg:grid-cols-4 lg:px-8">
           <div>
-            <p className="text-lg font-black text-slate-900">VIVA APEX FRESH FOODS</p>
+            <p className="text-lg font-black text-slate-900">VIVA APEX FROZEN FOODS</p>
             <p className="mt-3 text-sm leading-7 text-slate-600">
-              Premium fresh chicken, turkey and fish delivered with trust, speed and convenience.
+              Premium frozen chicken, turkey and fish delivered with trust, speed and convenience.
             </p>
           </div>
           <div>
@@ -37,7 +37,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="border-t border-slate-200 px-4 py-5 text-center text-sm text-slate-500 sm:px-6 lg:px-8">
-          © 2026 VIVA APEX FRESH FOODS. All rights reserved.
+          © 2026 VIVA APEX FROZEN FOODS. All rights reserved.
         </div>
       </footer>
   )

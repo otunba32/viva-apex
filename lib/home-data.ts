@@ -10,7 +10,7 @@ export const brand = {
 export const categories = [
   {
     title: 'Chicken',
-    subtitle: 'Fresh chicken cuts',
+    subtitle: 'Fresh frozen chicken cuts',
     href: '/products?category=chicken',
     image: '/products/chicken-laps1.jpg',
   },
@@ -22,9 +22,9 @@ export const categories = [
   },
   {
     title: 'Fish',
-    subtitle: 'Clean, affordable fresh fish',
+    subtitle: 'Clean, affordable frozen fish',
     href: '/products?category=fish',
-    image: '/products/turkey-shoulder.jpg',
+    image: '/products/kote-fish(horse mackerel).jpg',
   },
 ]
 
@@ -48,15 +48,15 @@ export const featuredProducts = [
     slug: 'ice-fish',
     price: '₦5,000',
     category: 'Fish',
-    image: '/products/turkey-shoulder.jpg',
+    image: '/products/titus-fish(mackerel).jpg',
   },
 ]
 
 export const benefits = [
   {
     icon: Snowflake,
-    title: 'Fresh Products',
-    text: 'Products handled with freshness in mind from farm to delivery.',
+    title: 'Properly Frozen',
+    text: 'Products handled with freshness in mind from storage to delivery.',
   },
   {
     icon: Truck,

@@ -70,7 +70,7 @@ export function ProductCard({
             <motion.img
               src={image}
               alt={name}
-              className="w-full h-full object-cover"
+              className="w-76 h-50 object-cover"
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.3 }}
             />

@@ -2,7 +2,8 @@
 
 import Link from 'next/link'
 import { brand } from '@/lib/home-data'
-import CartIcon from './CartIcon'
+import { CartIcon } from './CartIcon'
+// import CartIcon from './CartIcon'
 
 export default function Header() {
   return (

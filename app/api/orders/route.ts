@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';        // ✅ use shared instance
+import { OrderStatus } from '@prisma/client';  // ✅ use enum
 
 export async function POST(request: Request) {
   try {
@@ -9,24 +8,20 @@ export async function POST(request: Request) {
     const {
       customerName,
       customerEmail,
-      customerPhone,
+      customerPhone,  
       address,
       city,
-      state,
-      zipCode,
       totalAmount,
       items,
     } = body;
 
-    // Validate required fields
+    // Validate required fields (only fields that exist in your schema)
     if (
       !customerName ||
       !customerEmail ||
       !customerPhone ||
       !address ||
       !city ||
-      !state ||
-      !zipCode ||
       !totalAmount ||
       !items
     ) {
@@ -36,35 +31,28 @@ export async function POST(request: Request) {
       );
     }
 
-    // Create order and order items in a transaction
     const order = await prisma.order.create({
-      data: {
-        customerName,
-        customerEmail,
-        customerPhone,
-        address,
-        city,
-        state,
-        zipCode,
-        totalAmount,
-        status: 'pending',
-        items: {
-          create: items.map((item: any) => ({
-            productId: item.productId,
-            quantity: item.quantity,
-            price: item.price,
-          })),
-        },
-      },
-      include: {
-        items: true,
-      },
-    });
+  data: {
+    customerName,
+    customerEmail,
+    customerPhone,
+    address,
+    city,
+    totalAmount,
+    status: OrderStatus.PENDING,
+    items: {
+      create: items.map((item: { productId: string; quantity: number; unitPrice: number }) => ({
+        productId: item.productId,
+        quantity: item.quantity,
+        unitPrice: item.unitPrice,
+      })),
+    },
+  },
+  include: { items: true },
+});
 
-    return NextResponse.json({
-      success: true,
-      data: order,
-    });
+    return NextResponse.json({ success: true, data: order });
+
   } catch (error) {
     console.error('[Orders API] Error:', error);
     return NextResponse.json(
@@ -98,10 +86,8 @@ export async function GET(request: Request) {
       );
     }
 
-    return NextResponse.json({
-      success: true,
-      data: order,
-    });
+    return NextResponse.json({ success: true, data: order });
+
   } catch (error) {
     console.error('[Orders API] Error:', error);
     return NextResponse.json(

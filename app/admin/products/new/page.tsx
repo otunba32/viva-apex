@@ -365,7 +365,7 @@ if (!response.ok || !data.success) {
             />
           </div>
 
-          <div>
+          {/* <div>
             <label className="mb-2 block text-sm font-medium text-slate-700">
               Storage
             </label>
@@ -376,7 +376,7 @@ if (!response.ok || !data.success) {
               className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-red-500"
               placeholder="Keep frozen at -18°C"
             />
-          </div>
+          </div> */}
 
           {error && (
             <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">

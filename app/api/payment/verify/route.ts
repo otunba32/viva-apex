@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
+import { OrderStatus } from '@prisma/client';
+import { sendOrderConfirmationEmail } from '@/lib/email';
 
 const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
 
@@ -24,13 +24,22 @@ export async function POST(request: Request) {
       );
     }
 
-    // Verify payment with Paystack
+    // Guard: already paid — return early and skip email
+    const existingOrder = await prisma.order.findUnique({
+      where: { id: reference },
+    });
+    if (existingOrder?.status === OrderStatus.PAID) {
+      return NextResponse.json({
+        success: true,
+        data: { status: 'success', order: existingOrder },
+      });
+    }
+
     const response = await fetch(
       `https://api.paystack.co/transaction/verify/${reference}`,
       {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
         },
       }
@@ -45,30 +54,54 @@ export async function POST(request: Request) {
       );
     }
 
-    // Check if payment was successful
     if (data.data.status === 'success') {
-      // Update order status
+      // Update order and include items + product names for email
       const updatedOrder = await prisma.order.update({
         where: { id: reference },
         data: {
-          status: 'completed',
-          paymentRef: data.data.reference,
+          status: OrderStatus.PAID,
+          paystackRef: data.data.reference,
+        },
+        include: {
+          items: {
+            include: { product: true },
+          },
         },
       });
 
+      // Send confirmation email (non-blocking — don't fail the request if email fails)
+      try {
+        await sendOrderConfirmationEmail({
+          customerName: updatedOrder.customerName,
+          customerEmail: updatedOrder.customerEmail,
+          customerPhone: updatedOrder.customerPhone,
+          orderId: updatedOrder.id,
+          totalAmount: updatedOrder.totalAmount,
+          address: updatedOrder.address,
+          city: updatedOrder.city,
+          items: updatedOrder.items.map((item) => ({
+            name: item.product.name,
+            quantity: item.quantity,
+            unitPrice: item.unitPrice,
+          })),
+        });
+      } catch (emailError) {
+        // Log but don't fail the payment response
+        console.error('[Payment Verify] Email failed to send:', emailError);
+      }
+
       return NextResponse.json({
         success: true,
-        data: {
-          status: 'success',
-          order: updatedOrder,
-        },
+        data: { status: 'success', order: updatedOrder },
       });
     } else {
+      await prisma.order.update({
+        where: { id: reference },
+        data: { status: OrderStatus.FAILED },
+      });
+
       return NextResponse.json(
-        {
-          success: false,
-          error: 'Payment was not successful',
-        },
+        { success: false, error: 'Payment was not successful' },
         { status: 400 }
       );
     }

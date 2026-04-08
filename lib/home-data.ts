@@ -24,7 +24,7 @@ export const categories = [
     title: 'Fish',
     subtitle: 'Clean, affordable frozen fish',
     href: '/products?category=fish',
-    image: '/products/turkey-shoulder.jpg',
+    image: '/products/kote-fish(horse mackerel).jpg',
   },
 ]
 
@@ -48,7 +48,7 @@ export const featuredProducts = [
     slug: 'ice-fish',
     price: '₦5,000',
     category: 'Fish',
-    image: '/products/turkey-shoulder.jpg',
+    image: '/products/titus-fish(mackerel).jpg',
   },
 ]
 

@@ -35,7 +35,7 @@ export default function CheckoutPage() {
   if (items.length === 0) {
     return (
       <PageTransition>
-        <div className="min-h-screen bg-gray-50 pt-24 pb-12">
+        <div className="min-h-screen bg-gray-50 pt-15 pb-12">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <Link href="/cart" className="flex items-center text-blue-600 hover:text-blue-700 mb-6">
               <ArrowLeft className="w-4 h-4 mr-2" />
@@ -79,7 +79,7 @@ export default function CheckoutPage() {
           items: items.map((item) => ({
             productId: item.id,
             quantity: item.quantity,
-            price: item.price,
+            unitPrice: item.price,  // ✅ was "price", schema expects "unitPrice"
           })),
         }),
       });
@@ -111,7 +111,7 @@ export default function CheckoutPage() {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-gray-50 pt-24 pb-12">
+      <div className="min-h-screen bg-gray-50 pt-5 pb-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <motion.div

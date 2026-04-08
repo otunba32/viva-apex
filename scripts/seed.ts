@@ -53,7 +53,6 @@ async function main() {
         description:
           'Clean frozen chicken breast perfect for healthy meals, grilling and stir-fry dishes.',
         nutrients: 'Protein, Iron, Zinc',
-        storage: 'Keep frozen until ready to cook.',
       },
       {
         name: 'Chicken Drumsticks',
@@ -66,7 +65,6 @@ async function main() {
         description:
           'Frozen chicken drumsticks rich in flavour and perfect for grilling, frying and stews.',
         nutrients: 'Protein, Iron, Vitamin B12',
-        storage: 'Store frozen at -18°C.',
       },
       {
         name: 'Chicken Fillet',
@@ -79,7 +77,6 @@ async function main() {
         description:
           'Boneless chicken fillet perfect for quick meals, frying, grilling and sandwiches.',
         nutrients: 'Protein, Iron, Vitamin B6',
-        storage: 'Keep frozen below -18°C.',
       },
       {
         name: 'Chicken Gizzards',
@@ -92,7 +89,6 @@ async function main() {
         description:
           'Fresh frozen chicken gizzards ideal for pepper soup, stir-fry and local dishes.',
         nutrients: 'Protein, Iron, Zinc',
-        storage: 'Store frozen until ready to cook.',
       },
       {
         name: 'Chicken Wings',
@@ -105,7 +101,6 @@ async function main() {
         description:
           'Frozen chicken wings great for grills, parties, sauces and everyday family meals.',
         nutrients: 'Protein, Iron, Vitamin B12',
-        storage: 'Store frozen until ready to cook.',
       },
       {
         name: 'Chicken Neck',
@@ -118,7 +113,6 @@ async function main() {
         description:
           'Frozen chicken neck suitable for soups, stock preparation and traditional meals.',
         nutrients: 'Protein, Iron',
-        storage: 'Store frozen until ready to cook.',
       },
       {
         name: 'Chicken Feet',
@@ -131,7 +125,6 @@ async function main() {
         description:
           'Frozen chicken feet ideal for soups, stock and specialty cooking.',
         nutrients: 'Protein, Collagen, Iron',
-        storage: 'Store frozen until ready to cook.',
       },
       {
         name: 'Chicken Head',
@@ -144,7 +137,6 @@ async function main() {
         description:
           'Frozen chicken head suitable for local soups, stock and traditional dishes.',
         nutrients: 'Protein, Iron',
-        storage: 'Store frozen until ready to cook.',
       },
       {
         name: 'Chicken Heart',
@@ -157,7 +149,6 @@ async function main() {
         description:
           'Frozen chicken heart suitable for grills, pepper soup and traditional recipes.',
         nutrients: 'Protein, Iron, Vitamin B12',
-        storage: 'Store frozen until ready to cook.',
       },
 
       // Turkey Products
@@ -172,7 +163,6 @@ async function main() {
         description:
           'Fresh frozen turkey full wings suitable for soups, grilling and hearty meals.',
         nutrients: 'Protein, Iron, Vitamin B12',
-        storage: 'Store frozen until ready to cook.',
       },
       {
         name: 'Turkey Mid Wings',
@@ -185,7 +175,6 @@ async function main() {
         description:
           'Frozen turkey mid wings perfect for roasting, soups and home cooking.',
         nutrients: 'Protein, Iron, Vitamin B12',
-        storage: 'Store frozen until ready to cook.',
       },
       {
         name: 'Turkey Shoulder',
@@ -198,7 +187,6 @@ async function main() {
         description:
           'Fresh frozen turkey shoulder ideal for stews, soups and traditional dishes.',
         nutrients: 'Protein, Iron, Zinc',
-        storage: 'Store frozen until ready to cook.',
       },
       {
         name: 'Turkey Laps',
@@ -211,7 +199,6 @@ async function main() {
         description:
           'Frozen turkey laps with rich flavour, suitable for grills and family meals.',
         nutrients: 'Protein, Iron, Vitamin B12',
-        storage: 'Store frozen until ready to cook.',
       },
       {
         name: 'Turkey Finger',
@@ -224,7 +211,6 @@ async function main() {
         description:
           'Fresh frozen turkey finger cuts suitable for soups, pepper soup and local dishes.',
         nutrients: 'Protein, Iron',
-        storage: 'Store frozen until ready to cook.',
       },
       {
         name: 'Turkey Gizzards',
@@ -237,7 +223,6 @@ async function main() {
         description:
           'Frozen turkey gizzards ideal for stir-fry, grills and traditional meals.',
         nutrients: 'Protein, Iron, Zinc',
-        storage: 'Store frozen until ready to cook.',
       },
 
       // Fish Products
@@ -252,7 +237,6 @@ async function main() {
         description:
           'Fresh frozen ice fish suitable for soups, stews and everyday cooking.',
         nutrients: 'Protein, Omega-3, Vitamin D',
-        storage: 'Keep frozen until ready to cook.',
       },
       {
         name: 'Croaker Fish',
@@ -265,7 +249,6 @@ async function main() {
         description:
           'Frozen croaker fish perfect for grilling, frying and pepper soup dishes.',
         nutrients: 'Protein, Omega-3, Vitamin D',
-        storage: 'Keep frozen until ready to cook.',
       },
       {
         name: 'Titus Fish',
@@ -278,7 +261,6 @@ async function main() {
         description:
           'Fresh frozen titus fish ideal for stews, frying and traditional Nigerian meals.',
         nutrients: 'Protein, Omega-3, Vitamin D',
-        storage: 'Keep frozen until ready to cook.',
       },
     ],
   })

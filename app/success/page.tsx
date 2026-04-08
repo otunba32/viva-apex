@@ -11,6 +11,7 @@ interface Order {
   id: string;
   customerName: string;
   customerEmail: string;
+  customerPhone: string; 
   address: string;
   city: string;
   totalAmount: number;

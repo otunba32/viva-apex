@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { useParams, useRouter } from 'next/navigation'
 import { PageTransition } from '@/components/PageTransition'
 import { Button } from '@/components/ui/button'
-import { ShoppingCart, ArrowLeft, CheckCircle2 } from 'lucide-react'
+import { ShoppingCart, ArrowLeft, CheckCircle2, Plus, Minus } from 'lucide-react'
 import Link from 'next/link'
 import { useCart } from '@/context/CartContext'
 import ProductImageGallery from '@/components/ProductImageGallery'
@@ -142,7 +142,7 @@ export default function ProductDetailsPage() {
     <PageTransition>
       <div className="min-h-screen bg-gray-50 pb-12 pt-6">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          
+
           <div className="mb-6">
             <Link href="/products">
               <Button variant="outline" className="border-gray-300 bg-white">
@@ -202,7 +202,7 @@ export default function ProductDetailsPage() {
                   {!product.weight &&
                     !product.unit &&
                     !product.nutrients &&
-                     (
+                    (
                       <p className="text-gray-500">
                         More product details will be available soon.
                       </p>
@@ -260,9 +260,8 @@ export default function ProductDetailsPage() {
                 <div className="mb-5">
                   <p className="mb-2 text-sm text-gray-600">Availability</p>
                   <p
-                    className={`text-lg font-semibold ${
-                      isOutOfStock ? 'text-red-600' : 'text-green-600'
-                    }`}
+                    className={`text-lg font-semibold ${isOutOfStock ? 'text-red-600' : 'text-green-600'
+                      }`}
                   >
                     {isOutOfStock ? 'Out of stock' : `${product.stock} in stock`}
                   </p>
@@ -280,21 +279,15 @@ export default function ProductDetailsPage() {
                         variant="outline"
                         onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
                       >
-                        −
+                        <Minus className="h-4 w-4" />
                       </Button>
-
-                      <span className="w-12 text-center text-2xl font-semibold">
-                        {quantity}
-                      </span>
 
                       <Button
                         type="button"
                         variant="outline"
-                        onClick={() =>
-                          setQuantity((prev) => Math.min(product.stock, prev + 1))
-                        }
+                        onClick={() => setQuantity((prev) => Math.min(product.stock, prev + 1))}
                       >
-                        +
+                        <Plus className="h-4 w-4" />
                       </Button>
                     </div>
 
@@ -324,9 +317,9 @@ export default function ProductDetailsPage() {
                 </motion.div>
               </div>
 
-              
 
-              {/* <div className="rounded-2xl bg-red-50 p-6">
+
+              <div className="rounded-2xl bg-red-50 p-6">
                 <h3 className="mb-4 font-semibold text-gray-900">Why Choose Us?</h3>
                 <ul className="space-y-2 text-gray-700">
                   <li className="flex items-start">
@@ -345,8 +338,9 @@ export default function ProductDetailsPage() {
                     <span className="mr-3 font-bold text-red-600">✓</span>
                     Friendly customer support
                   </li>
+
                 </ul>
-              </div> */}
+              </div>
             </motion.div>
           </div>
         </div>

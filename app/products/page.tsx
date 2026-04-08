@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Fish, Drumstick, Beef, Search, SlidersHorizontal } from 'lucide-react'
+import { Fish, Drumstick, Search, SlidersHorizontal, Bird } from 'lucide-react'
 import { PageTransition } from '@/components/PageTransition'
 import { StaggerContainer, StaggerItem } from '@/components/StaggerContainer'
 import { ProductCard } from '@/components/ProductCard'
@@ -29,7 +29,7 @@ const FILTERS: {
 }[] = [
   { key: 'all', label: 'All' },
   { key: 'chicken', label: 'Chicken', icon: Drumstick },
-  { key: 'turkey', label: 'Turkey', icon: Beef },
+  { key: 'turkey', label: 'Turkey', icon: Bird },
   { key: 'fish', label: 'Fish', icon: Fish },
 ]
 

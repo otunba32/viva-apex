@@ -19,6 +19,7 @@ export async function POST(request: Request) {
     if (
       !customerName ||
       !customerEmail ||
+      !customerPhone ||
       !address ||
       !city ||
       !totalAmount ||

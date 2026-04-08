@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { OrderStatus } from '@prisma/client';
+import { sendOrderConfirmationEmail } from '@/lib/email';
 
 const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
 
@@ -23,10 +24,15 @@ export async function POST(request: Request) {
       );
     }
 
-    // Guard: already paid
-    const existingOrder = await prisma.order.findUnique({ where: { id: reference } });
+    // Guard: already paid — return early and skip email
+    const existingOrder = await prisma.order.findUnique({
+      where: { id: reference },
+    });
     if (existingOrder?.status === OrderStatus.PAID) {
-      return NextResponse.json({ success: true, data: { status: 'success', order: existingOrder } });
+      return NextResponse.json({
+        success: true,
+        data: { status: 'success', order: existingOrder },
+      });
     }
 
     const response = await fetch(
@@ -49,13 +55,40 @@ export async function POST(request: Request) {
     }
 
     if (data.data.status === 'success') {
+      // Update order and include items + product names for email
       const updatedOrder = await prisma.order.update({
         where: { id: reference },
         data: {
-          status: OrderStatus.PAID,       // ✅ correct enum value
-          paystackRef: data.data.reference, // ✅ correct field name
+          status: OrderStatus.PAID,
+          paystackRef: data.data.reference,
+        },
+        include: {
+          items: {
+            include: { product: true },
+          },
         },
       });
+
+      // Send confirmation email (non-blocking — don't fail the request if email fails)
+      try {
+        await sendOrderConfirmationEmail({
+          customerName: updatedOrder.customerName,
+          customerEmail: updatedOrder.customerEmail,
+          customerPhone: updatedOrder.customerPhone,
+          orderId: updatedOrder.id,
+          totalAmount: updatedOrder.totalAmount,
+          address: updatedOrder.address,
+          city: updatedOrder.city,
+          items: updatedOrder.items.map((item) => ({
+            name: item.product.name,
+            quantity: item.quantity,
+            unitPrice: item.unitPrice,
+          })),
+        });
+      } catch (emailError) {
+        // Log but don't fail the payment response
+        console.error('[Payment Verify] Email failed to send:', emailError);
+      }
 
       return NextResponse.json({
         success: true,

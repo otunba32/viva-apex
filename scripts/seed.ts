@@ -27,7 +27,7 @@ async function main() {
         description:
           'Premium frozen whole chicken, properly cleaned and packaged for home cooking, family meals and restaurants.',
         nutrients: 'Protein, Iron, Vitamin B12',
-        storage: 'Keep frozen at -18°C. Do not refreeze after thawing.',
+        // storage: 'Keep frozen at -18°C. Do not refreeze after thawing.',
       },
       {
         name: 'Chicken Laps',
@@ -40,7 +40,7 @@ async function main() {
         description:
           'Fresh frozen chicken laps ideal for grilling, frying and everyday meals.',
         nutrients: 'Protein, Iron, Vitamin B6',
-        storage: 'Store frozen below -18°C.',
+        // storage: 'Store frozen below -18°C.',
       },
       {
         name: 'Chicken Breast',

@@ -70,7 +70,7 @@ export function ProductCard({
             <motion.img
               src={image}
               alt={name}
-              className="w-76 h-50 object-cover"
+              className="w-full h-full object-cover"
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.3 }}
             />
@@ -95,9 +95,10 @@ export function ProductCard({
           </div>
 
           {/* Add to Cart Button */}
-          <div className="px-4 pb-4" onClick={handleAddToCart}>
+          <div className="px-4 pb-4" >
             <Button
               disabled={stock === 0}
+              onClick={handleAddToCart}
               className="w-full bg-blue-600 hover:bg-[#A61E1E] text-white"
             >
               <ShoppingCart className="w-4 h-4 mr-2" />

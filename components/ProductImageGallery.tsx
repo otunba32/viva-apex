@@ -43,7 +43,6 @@ export default function ProductImageGallery({
     })
   }
 
-  const [useCover, setUseCover] = useState(true);
 
   const handleMouseLeave = () => {
     setZoomStyle({
@@ -62,17 +61,17 @@ export default function ProductImageGallery({
             onMouseLeave={handleMouseLeave}
             onClick={() => setIsOpen(true)}
           >
-          {/* const [useCover, setUseCover] = useState(true); */}
+            {/* const [useCover, setUseCover] = useState(true); */}
 
-<Image
-  src={activeImage}
-  alt={alt}
-  fill
-  priority
-  sizes="(max-width: 1024px) 100vw, 50vw"
-  className="object-cover scale-100 transition-transform duration-200 ease-out"
-  style={zoomStyle}
-/>
+            <Image
+              src={activeImage}
+              alt={alt}
+              fill
+              priority
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-cover scale-100 transition-transform duration-200 ease-out"
+              style={zoomStyle}
+            />
 
             <button
               type="button"
@@ -124,11 +123,10 @@ export default function ProductImageGallery({
                   key={`${image}-${index}`}
                   type="button"
                   onClick={() => setActiveIndex(index)}
-                  className={`relative overflow-hidden rounded-xl border transition ${
-                    isActive
+                  className={`relative overflow-hidden rounded-xl border transition ${isActive
                       ? 'border-red-600 ring-2 ring-red-200'
                       : 'border-slate-200 hover:border-slate-300'
-                  }`}
+                    }`}
                 >
                   <div className="relative h-20 w-full bg-slate-100">
                     <Image
@@ -205,11 +203,10 @@ export default function ProductImageGallery({
                       key={`modal-${image}-${index}`}
                       type="button"
                       onClick={() => setActiveIndex(index)}
-                      className={`relative overflow-hidden rounded-xl border ${
-                        isActive
+                      className={`relative overflow-hidden rounded-xl border ${isActive
                           ? 'border-white ring-2 ring-white/30'
                           : 'border-white/20'
-                      }`}
+                        }`}
                     >
                       <div className="relative h-16 w-full bg-slate-900">
                         <Image

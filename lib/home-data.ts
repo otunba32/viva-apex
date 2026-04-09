@@ -29,27 +29,9 @@ export const categories = [
 ]
 
 export const featuredProducts = [
-  {
-    name: 'Full Chicken',
-    slug: 'full-chicken',
-    price: '₦8,500',
-    category: 'Chicken',
-    image: '/products/full-chicken.jpg',
-  },
-  {
-    name: 'Turkey Wings',
-    slug: 'turkey-wings',
-    price: '₦9,500',
-    category: 'Turkey',
-    image: '/products/turkey-wings.jpg',
-  },
-  {
-    name: 'Ice Fish',
-    slug: 'ice-fish',
-    price: '₦5,000',
-    category: 'Fish',
-    image: '/products/titus-fish(mackerel).jpg',
-  },
+  { name: 'Full Chicken', slug: 'full-chicken', price: '₦8,500', category: 'Chicken', image: '/products/full-chicken.jpg' },
+  { name: 'Turkey Wings', slug: 'turkey-wings', price: '₦9,500', category: 'Turkey', image: '/products/turkey-wings.jpg' },
+  { name: 'Ice Fish', slug: 'ice-fish', price: '₦5,000', category: 'Fish', image: '/products/titus-fish(mackerel).jpg' },
 ]
 
 export const benefits = [

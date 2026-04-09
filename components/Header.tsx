@@ -3,9 +3,14 @@
 import Link from 'next/link'
 import { brand } from '@/lib/home-data'
 import { CartIcon } from './CartIcon'
-// import CartIcon from './CartIcon'
+import { useRouter } from 'next/navigation'
+
+
 
 export default function Header() {
+
+  const router = useRouter()
+
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/90 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
@@ -50,6 +55,11 @@ export default function Header() {
               type="text"
               placeholder="Search chicken, turkey, fish..."
               className="w-56 bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-400"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  router.push(`/products?search=${e.currentTarget.value}`)
+                }
+              }}
             />
           </div>
 

@@ -1,7 +1,7 @@
 'use client'
-
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { adminFetch } from '@/lib/adminFetch'
 
 type FormState = {
   name: string
@@ -14,7 +14,6 @@ type FormState = {
   unit: string
   description: string
   nutrients: string
-  storage: string
   featured: boolean
   available: boolean
 }
@@ -30,7 +29,6 @@ const initialState: FormState = {
   unit: '',
   description: '',
   nutrients: '',
-  storage: '',
   featured: false,
   available: true,
 }
@@ -64,9 +62,7 @@ export default function NewProductPage() {
     }))
   }
 
-  const handleImageUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (!file) return
 
@@ -74,7 +70,6 @@ export default function NewProductPage() {
       setError('Please select a valid image file')
       return
     }
-
     if (file.size > 5 * 1024 * 1024) {
       setError('Image must be less than 5MB')
       return
@@ -92,20 +87,14 @@ export default function NewProductPage() {
         method: 'POST',
         body: formData,
       })
-
       const data = await response.json()
-console.log('CREATE PRODUCT RESPONSE:', data)
 
-if (!response.ok || !data.success) {
-  throw new Error(data.error || 'Failed to save product')
-}
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || 'Failed to upload image')
+      }
 
-      setForm((prev) => ({
-        ...prev,
-        image: data.url,
-      }))
+      setForm((prev) => ({ ...prev, image: data.url }))
     } catch (err) {
-      console.error('UPLOAD ERROR:', err)
       setError(err instanceof Error ? err.message : 'Image upload failed')
     } finally {
       setUploading(false)
@@ -115,35 +104,12 @@ if (!response.ok || !data.success) {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    if (!form.name.trim()) {
-      setError('Product name is required')
-      return
-    }
-
-    if (!form.slug.trim()) {
-      setError('Slug is required')
-      return
-    }
-
-    if (!form.price.trim()) {
-      setError('Price is required')
-      return
-    }
-
-    if (!form.stock.trim()) {
-      setError('Stock is required')
-      return
-    }
-
-    if (!form.category.trim()) {
-      setError('Category is required')
-      return
-    }
-
-    if (!form.image.trim()) {
-      setError('Image upload did not complete. Please upload the image again.')
-      return
-    }
+    if (!form.name.trim()) return setError('Product name is required')
+    if (!form.slug.trim()) return setError('Slug is required')
+    if (!form.price.trim()) return setError('Price is required')
+    if (!form.stock.trim()) return setError('Stock is required')
+    if (!form.category.trim()) return setError('Category is required')
+    if (!form.image.trim()) return setError('Please upload a product image')
 
     try {
       setSaving(true)
@@ -154,17 +120,13 @@ if (!response.ok || !data.success) {
         ...form,
         price: Number(form.price),
         stock: Number(form.stock),
-        images: form.image ? [form.image] : [],
+        images: [form.image],
       }
 
-      const response = await fetch('/api/admin/products', {
+      const response = await adminFetch('/api/admin/products', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify(payload),
       })
-
       const data = await response.json()
 
       if (!response.ok || !data.success) {
@@ -173,10 +135,7 @@ if (!response.ok || !data.success) {
 
       setSuccess('Product created successfully')
       setForm(initialState)
-
-      setTimeout(() => {
-        router.push('/admin/products')
-      }, 1000)
+      setTimeout(() => router.push('/admin/products'), 1000)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to save product')
     } finally {
@@ -188,9 +147,7 @@ if (!response.ok || !data.success) {
     <div className="min-h-screen bg-slate-50 px-4 py-10">
       <div className="mx-auto max-w-3xl rounded-2xl bg-white p-8 shadow-sm">
         <h1 className="text-3xl font-bold text-slate-900">Add New Product</h1>
-        <p className="mt-2 text-slate-600">
-          Create a new product for your store inventory.
-        </p>
+        <p className="mt-2 text-slate-600">Create a new product for your store inventory.</p>
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-6">
           <div className="grid gap-6 md:grid-cols-2">
@@ -206,7 +163,6 @@ if (!response.ok || !data.success) {
                 placeholder="Full Chicken"
               />
             </div>
-
             <div>
               <label className="mb-2 block text-sm font-medium text-slate-700">
                 Slug <span className="text-red-500">*</span>
@@ -219,7 +175,6 @@ if (!response.ok || !data.success) {
                 placeholder="full-chicken"
               />
             </div>
-
             <div>
               <label className="mb-2 block text-sm font-medium text-slate-700">
                 Price <span className="text-red-500">*</span>
@@ -233,7 +188,6 @@ if (!response.ok || !data.success) {
                 placeholder="8500"
               />
             </div>
-
             <div>
               <label className="mb-2 block text-sm font-medium text-slate-700">
                 Stock <span className="text-red-500">*</span>
@@ -247,7 +201,6 @@ if (!response.ok || !data.success) {
                 placeholder="50"
               />
             </div>
-
             <div>
               <label className="mb-2 block text-sm font-medium text-slate-700">
                 Category <span className="text-red-500">*</span>
@@ -262,11 +215,8 @@ if (!response.ok || !data.success) {
                 <option value="fish">Fish</option>
               </select>
             </div>
-
             <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700">
-                Weight
-              </label>
+              <label className="mb-2 block text-sm font-medium text-slate-700">Weight</label>
               <input
                 type="text"
                 value={form.weight}
@@ -275,11 +225,8 @@ if (!response.ok || !data.success) {
                 placeholder="1kg pack"
               />
             </div>
-
             <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700">
-                Unit
-              </label>
+              <label className="mb-2 block text-sm font-medium text-slate-700">Unit</label>
               <input
                 type="text"
                 value={form.unit}
@@ -288,7 +235,6 @@ if (!response.ok || !data.success) {
                 placeholder="per kg, 1 pack, carton"
               />
             </div>
-
             <div className="flex items-center gap-3 rounded-xl border border-slate-200 px-4 py-3">
               <input
                 id="featured"
@@ -301,7 +247,6 @@ if (!response.ok || !data.success) {
                 Featured product
               </label>
             </div>
-
             <div className="flex items-center gap-3 rounded-xl border border-slate-200 px-4 py-3">
               <input
                 id="available"
@@ -326,11 +271,7 @@ if (!response.ok || !data.success) {
               onChange={handleImageUpload}
               className="w-full rounded-xl border border-slate-300 px-4 py-3"
             />
-
-            {uploading && (
-              <p className="mt-2 text-sm text-slate-500">Uploading image...</p>
-            )}
-
+            {uploading && <p className="mt-2 text-sm text-slate-500">Uploading image...</p>}
             {form.image && (
               <img
                 src={form.image}
@@ -341,9 +282,7 @@ if (!response.ok || !data.success) {
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-medium text-slate-700">
-              Description
-            </label>
+            <label className="mb-2 block text-sm font-medium text-slate-700">Description</label>
             <textarea
               value={form.description}
               onChange={(e) => updateField('description', e.target.value)}
@@ -353,9 +292,7 @@ if (!response.ok || !data.success) {
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-medium text-slate-700">
-              Nutrients
-            </label>
+            <label className="mb-2 block text-sm font-medium text-slate-700">Nutrients</label>
             <input
               type="text"
               value={form.nutrients}
@@ -365,29 +302,11 @@ if (!response.ok || !data.success) {
             />
           </div>
 
-          {/* <div>
-            <label className="mb-2 block text-sm font-medium text-slate-700">
-              Storage
-            </label>
-            <input
-              type="text"
-              value={form.storage}
-              onChange={(e) => updateField('storage', e.target.value)}
-              className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-red-500"
-              placeholder="Keep frozen at -18°C"
-            />
-          </div> */}
-
           {error && (
-            <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
-              {error}
-            </div>
+            <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>
           )}
-
           {success && (
-            <div className="rounded-xl bg-green-50 px-4 py-3 text-sm text-green-700">
-              {success}
-            </div>
+            <div className="rounded-xl bg-green-50 px-4 py-3 text-sm text-green-700">{success}</div>
           )}
 
           <button

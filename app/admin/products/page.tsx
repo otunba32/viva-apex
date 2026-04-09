@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Pencil, Plus, Trash2 } from 'lucide-react'
+import { adminFetch } from '@/lib/adminFetch'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -53,7 +54,7 @@ export default function AdminProductsPage() {
     try {
       setLoading(true)
       setError('')
-      const response = await fetch('/api/admin/products')
+      const response = await adminFetch('/api/admin/products')
       const data = await response.json()
       if (!data.success) {
         throw new Error(data.error || 'Failed to fetch products')
@@ -73,7 +74,7 @@ export default function AdminProductsPage() {
   const handleDelete = async (id: string) => {
     try {
       setDeletingId(id)
-      const response = await fetch(`/api/admin/products/${id}`, {
+      const response = await adminFetch(`/api/admin/products/${id}`, {
         method: 'DELETE',
       })
       const data = await response.json()

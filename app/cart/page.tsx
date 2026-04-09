@@ -37,7 +37,7 @@ export default function CartPage() {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-gray-50 pb-12 pt-24">
+      <div className="min-h-screen bg-gray-50 pb-12 pt-2">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: -20 }}

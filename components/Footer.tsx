@@ -37,7 +37,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="border-t border-slate-200 px-4 py-5 text-center text-sm text-slate-500 sm:px-6 lg:px-8">
-          © 2026 VIVA APEX FROZEN FOODS. All rights reserved.
+          &copy; 2026 VIVA APEX FROZEN FOODS. All rights reserved.
         </div>
       </footer>
   )

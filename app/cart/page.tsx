@@ -9,15 +9,13 @@ import Link from 'next/link'
 import { ArrowLeft, Trash2, Plus, Minus } from 'lucide-react'
 
 export default function CartPage() {
-  const { items, removeItem, updateQuantity, total, clearCart } = useCart()
+  const { items, removeItem, updateQuantity, total, clearCart, mounted } = useCart()
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
+      transition: { staggerChildren: 0.1 },
     },
   }
 
@@ -35,9 +33,22 @@ export default function CartPage() {
     },
   }
 
+  if (!mounted) {
+    return (
+      <PageTransition>
+        <div className="min-h-screen bg-gray-50 pb-12 pt-2">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+            <div className="mb-8 mt-4 h-10 w-44 animate-pulse rounded-md bg-gray-200" />
+            <div className="h-64 animate-pulse rounded-lg bg-gray-100" />
+          </div>
+        </div>
+      </PageTransition>
+    )
+  }
+
   return (
     <PageTransition>
-      <div className="min-h-screen bg-gray-50 pb-12 pt-24">
+      <div className="min-h-screen bg-gray-50 pb-12 pt-2">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -46,13 +57,11 @@ export default function CartPage() {
             className="mb-8"
           >
             <Link href="/products" className="mt-4 block">
-                    <Button variant="outline" className="border-gray-300 bg-white">
+              <Button variant="outline" className="border-gray-300 bg-white">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Continue Shopping
               </Button>
-                  </Link>
-
-            
+            </Link>
           </motion.div>
 
           {items.length === 0 ? (
@@ -108,9 +117,7 @@ export default function CartPage() {
                         <div className="mt-4 flex items-center gap-3">
                           <Button
                             type="button"
-                            onClick={() =>
-                              updateQuantity(item.id, Math.max(1, item.quantity - 1))
-                            }
+                            onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
                             variant="outline"
                             className="h-9 w-9 p-0"
                           >
@@ -174,22 +181,16 @@ export default function CartPage() {
                 className="lg:col-span-1"
               >
                 <div className="sticky top-28 rounded-lg bg-white p-6 shadow-md">
-                  <h3 className="mb-6 text-xl font-bold text-gray-900">
-                    Order Summary
-                  </h3>
+                  <h3 className="mb-6 text-xl font-bold text-gray-900">Order Summary</h3>
 
                   <div className="mb-4 flex justify-between border-b border-gray-200 pb-4">
                     <p className="text-gray-600">Items ({items.length})</p>
-                    <p className="font-semibold text-gray-900">
-                      ₦{total.toLocaleString()}
-                    </p>
+                    <p className="font-semibold text-gray-900">₦{total.toLocaleString()}</p>
                   </div>
 
                   <div className="mb-4 flex justify-between border-b border-gray-200 pb-4">
                     <p className="text-gray-600">Subtotal</p>
-                    <p className="font-semibold text-gray-900">
-                      ₦{total.toLocaleString()}
-                    </p>
+                    <p className="font-semibold text-gray-900">₦{total.toLocaleString()}</p>
                   </div>
 
                   <div className="mb-6 flex justify-between border-b border-gray-200 pb-6">
@@ -199,9 +200,7 @@ export default function CartPage() {
 
                   <div className="mb-8 flex justify-between">
                     <p className="text-lg font-bold text-gray-900">Total</p>
-                    <p className="text-2xl font-bold text-blue-600">
-                      ₦{total.toLocaleString()}
-                    </p>
+                    <p className="text-2xl font-bold text-blue-600">₦{total.toLocaleString()}</p>
                   </div>
 
                   <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
@@ -211,8 +210,6 @@ export default function CartPage() {
                       </Button>
                     </Link>
                   </motion.div>
-
-                  {/*  */}
                 </div>
               </motion.div>
             </div>

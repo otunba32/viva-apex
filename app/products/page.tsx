@@ -1,8 +1,8 @@
 'use client'
-
 import { useEffect, useMemo, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { Fish, Drumstick, Search, SlidersHorizontal, Bird } from 'lucide-react'
+import { Fish, Drumstick, Bird, Search, SlidersHorizontal } from 'lucide-react'
 import { PageTransition } from '@/components/PageTransition'
 import { StaggerContainer, StaggerItem } from '@/components/StaggerContainer'
 import { ProductCard } from '@/components/ProductCard'
@@ -37,29 +37,36 @@ const brand = {
   red: '#D62828',
   deepRed: '#A61E1E',
   orange: '#F77F00',
-  cream: '#FFF7ED',
 }
 
 export default function ProductsPage() {
+  const searchParams = useSearchParams()
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [activeFilter, setActiveFilter] = useState<FilterKey>('all')
   const [searchTerm, setSearchTerm] = useState('')
 
+  // Read URL params on load
+  useEffect(() => {
+    const category = searchParams.get('category') as FilterKey | null
+    const search = searchParams.get('search')
+    if (category && ['chicken', 'turkey', 'fish'].includes(category)) {
+      setActiveFilter(category)
+    }
+    if (search) {
+      setSearchTerm(search)
+    }
+  }, [searchParams])
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true)
         setError(null)
-
         const response = await fetch('/api/products')
-        if (!response.ok) {
-          throw new Error('Failed to fetch products')
-        }
-
+        if (!response.ok) throw new Error('Failed to fetch products')
         const data = await response.json()
-
         if (data.success) {
           setProducts(data.data)
         } else {
@@ -72,32 +79,23 @@ export default function ProductsPage() {
         setLoading(false)
       }
     }
-
     fetchProducts()
   }, [])
 
   const filteredProducts = useMemo(() => {
     let result = products
-
     if (activeFilter !== 'all') {
-      result = result.filter((product) => product.category === activeFilter)
+      result = result.filter((p) => p.category === activeFilter)
     }
-
     if (searchTerm.trim()) {
       const query = searchTerm.toLowerCase()
-      result = result.filter((product) =>
-        [
-          product.name,
-          product.category,
-          product.description ?? '',
-          product.weight ?? '',
-        ]
+      result = result.filter((p) =>
+        [p.name, p.category, p.description ?? '', p.weight ?? '']
           .join(' ')
           .toLowerCase()
-          .includes(query),
+          .includes(query)
       )
     }
-
     return result
   }, [products, activeFilter, searchTerm])
 
@@ -108,13 +106,14 @@ export default function ProductsPage() {
       turkey: products.filter((p) => p.category === 'turkey').length,
       fish: products.filter((p) => p.category === 'fish').length,
     }),
-    [products],
+    [products]
   )
 
   return (
     <PageTransition>
       <div className="min-h-screen bg-gradient-to-b from-orange-50/40 via-white to-white pt-6 pb-14">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          {/* Header Banner */}
           <motion.div
             initial={{ opacity: 0, y: -18 }}
             animate={{ opacity: 1, y: 0 }}
@@ -141,11 +140,9 @@ export default function ProductsPage() {
                 </h1>
                 <p className="mt-4 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg">
                   Browse our complete selection of chicken, turkey and fish.
-                  Shop for family meals, events, food prep and bulk supply with
-                  a cleaner, modern buying experience.
+                  Shop for family meals, events, food prep and bulk supply.
                 </p>
               </div>
-
               <div className="mt-8 grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
                 <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 shadow-sm">
                   <Search className="h-5 w-5 text-slate-400" />
@@ -156,8 +153,16 @@ export default function ProductsPage() {
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="w-full bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-400"
                   />
+                  {searchTerm && (
+                    <button
+                      type="button"
+                      onClick={() => setSearchTerm('')}
+                      className="text-slate-400 hover:text-slate-600 text-xs"
+                    >
+                      Clear
+                    </button>
+                  )}
                 </div>
-
                 <div className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm">
                   <SlidersHorizontal className="h-4 w-4" />
                   {filteredProducts.length} product
@@ -167,6 +172,7 @@ export default function ProductsPage() {
             </div>
           </motion.div>
 
+          {/* Filters */}
           <motion.div
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
@@ -176,7 +182,6 @@ export default function ProductsPage() {
             {FILTERS.map((filter) => {
               const isActive = activeFilter === filter.key
               const Icon = filter.icon
-
               return (
                 <Button
                   key={filter.key}
@@ -208,10 +213,11 @@ export default function ProductsPage() {
                     {counts[filter.key]}
                   </span>
                 </Button>
-              ) 
+              )
             })}
           </motion.div>
 
+          {/* Products Grid */}
           {loading ? (
             <div className="flex items-center justify-center py-20">
               <motion.div
@@ -241,9 +247,7 @@ export default function ProductsPage() {
           ) : (
             <div className="py-16 text-center">
               <div className="mx-auto max-w-xl rounded-[1.5rem] border border-orange-100 bg-orange-50/60 px-6 py-10">
-                <h3 className="text-2xl font-bold text-slate-900">
-                  No products found
-                </h3>
+                <h3 className="text-2xl font-bold text-slate-900">No products found</h3>
                 <p className="mt-3 text-slate-600">
                   Try switching categories or searching with a different name.
                 </p>

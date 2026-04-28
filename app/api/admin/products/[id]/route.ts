@@ -2,18 +2,22 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
 type RouteContext = {
-  params: Promise<{
-    id: string
-  }>
+  params: Promise<{ id: string }>
 }
 
-export async function GET(_request: Request, { params }: RouteContext) {
+function isAuthorized(request: Request) {
+  const adminKey = request.headers.get('x-admin-key')
+  return adminKey === process.env.ADMIN_SECRET_KEY
+}
+
+export async function GET(request: Request, { params }: RouteContext) {
+  if (!isAuthorized(request)) {
+    return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
+  }
+
   try {
     const { id } = await params
-
-    const product = await prisma.product.findUnique({
-      where: { id },
-    })
+    const product = await prisma.product.findUnique({ where: { id } })
 
     if (!product) {
       return NextResponse.json(
@@ -22,13 +26,9 @@ export async function GET(_request: Request, { params }: RouteContext) {
       )
     }
 
-    return NextResponse.json({
-      success: true,
-      data: product,
-    })
+    return NextResponse.json({ success: true, data: product })
   } catch (error) {
     console.error('[ADMIN_PRODUCT_GET]', error)
-
     return NextResponse.json(
       { success: false, error: 'Failed to fetch product' },
       { status: 500 }
@@ -37,25 +37,19 @@ export async function GET(_request: Request, { params }: RouteContext) {
 }
 
 export async function PATCH(request: Request, { params }: RouteContext) {
+  if (!isAuthorized(request)) {
+    return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
+  }
+
   try {
     const { id } = await params
     const body = await request.json()
 
     const {
-      name,
-      slug,
-      price,
-      image,
-      images,
-      stock,
-      category,
-      weight,
-      unit,
-      description,
-      nutrients,
-      storage,
-      featured,
-      available,
+      name, slug, price, image, images, stock,
+      category, weight, unit, description, nutrients,
+      featured, available,
+      // storage removed — not in schema
     } = body
 
     const product = await prisma.product.update({
@@ -72,19 +66,14 @@ export async function PATCH(request: Request, { params }: RouteContext) {
         ...(unit !== undefined && { unit }),
         ...(description !== undefined && { description }),
         ...(nutrients !== undefined && { nutrients }),
-        ...(storage !== undefined && { storage }),
         ...(featured !== undefined && { featured }),
         ...(available !== undefined && { available }),
       },
     })
 
-    return NextResponse.json({
-      success: true,
-      data: product,
-    })
+    return NextResponse.json({ success: true, data: product })
   } catch (error) {
     console.error('[ADMIN_PRODUCT_PATCH]', error)
-
     return NextResponse.json(
       { success: false, error: 'Failed to update product' },
       { status: 500 }
@@ -92,13 +81,14 @@ export async function PATCH(request: Request, { params }: RouteContext) {
   }
 }
 
-export async function DELETE(_request: Request, { params }: RouteContext) {
+export async function DELETE(request: Request, { params }: RouteContext) {
+  if (!isAuthorized(request)) {
+    return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
+  }
+
   try {
     const { id } = await params
-
-    await prisma.product.delete({
-      where: { id },
-    })
+    await prisma.product.delete({ where: { id } })
 
     return NextResponse.json({
       success: true,
@@ -106,7 +96,6 @@ export async function DELETE(_request: Request, { params }: RouteContext) {
     })
   } catch (error) {
     console.error('[ADMIN_PRODUCT_DELETE]', error)
-
     return NextResponse.json(
       { success: false, error: 'Failed to delete product' },
       { status: 500 }

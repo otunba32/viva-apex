@@ -9,12 +9,6 @@ cloudinary.config({
 
 export async function POST(request: Request) {
   try {
-    console.log('CLOUDINARY DEBUG:', {
-      cloudName: process.env.CLOUDINARY_CLOUD_NAME,
-      hasApiKey: Boolean(process.env.CLOUDINARY_API_KEY),
-      hasApiSecret: Boolean(process.env.CLOUDINARY_API_SECRET),
-    })
-
     if (
       !process.env.CLOUDINARY_CLOUD_NAME ||
       !process.env.CLOUDINARY_API_KEY ||

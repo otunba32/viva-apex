@@ -1,7 +1,7 @@
-import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
 
-const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
+const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY
 
 export async function POST(request: Request) {
   try {
@@ -9,33 +9,31 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { success: false, error: 'Paystack secret key not configured' },
         { status: 500 }
-      );
+      )
     }
 
-    const body = await request.json();
-    const { orderId } = body;
+    const { orderId } = await request.json()
 
     if (!orderId) {
       return NextResponse.json(
         { success: false, error: 'Order ID is required' },
         { status: 400 }
-      );
+      )
     }
 
-    // Get order details
     const order = await prisma.order.findUnique({
       where: { id: orderId },
       include: { items: true },
-    });
+    })
 
     if (!order) {
       return NextResponse.json(
         { success: false, error: 'Order not found' },
         { status: 404 }
-      );
+      )
     }
 
-    // Initialize payment with Paystack
+    // Initialize with Paystack to get a reference
     const response = await fetch('https://api.paystack.co/transaction/initialize', {
       method: 'POST',
       headers: {
@@ -44,39 +42,38 @@ export async function POST(request: Request) {
       },
       body: JSON.stringify({
         email: order.customerEmail,
-        // totalAmount is stored in Naira in the DB
-        // Paystack requires kobo, so multiply by 100
-        amount: Math.round(order.totalAmount * 100), // Paystack uses kobo (1 Naira = 100 kobo)    
+        amount: Math.round(order.totalAmount * 100), // naira → kobo
         metadata: {
           order_id: orderId,
           customer_name: order.customerName,
           customer_phone: order.customerPhone,
         },
       }),
-    });
+    })
 
-    const data = await response.json();
+    const data = await response.json()
 
     if (!data.status) {
       return NextResponse.json(
         { success: false, error: data.message || 'Failed to initialize payment' },
         { status: 400 }
-      );
+      )
     }
 
+    // ✅ Return what payment/page.tsx needs to open Paystack inline
     return NextResponse.json({
       success: true,
       data: {
-        authorizationUrl: data.data.authorization_url,
-        accessCode: data.data.access_code,
-        reference: data.data.reference,
+        email: order.customerEmail,
+        amount: order.totalAmount,          // naira — page converts to kobo
+        reference: data.data.reference,    // Paystack-generated reference
       },
-    });
+    })
   } catch (error) {
-    console.error('[Payment Initialize API] Error:', error);
+    console.error('[Payment Initialize API] Error:', error)
     return NextResponse.json(
       { success: false, error: 'Failed to initialize payment' },
       { status: 500 }
-    );
+    )
   }
 }

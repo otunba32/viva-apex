@@ -18,19 +18,14 @@ type PaystackTransaction = {
 type PaystackSetupOptions = {
   key: string
   email: string
-  amount: number // kobo
+  amount: number
   ref: string
   onClose: () => void
   onSuccess: (transaction: PaystackTransaction) => void
 }
 
-type PaystackHandler = {
-  openIframe: () => void
-}
-
-type PaystackPop = {
-  setup: (options: PaystackSetupOptions) => PaystackHandler
-}
+type PaystackHandler = { openIframe: () => void }
+type PaystackPop = { setup: (options: PaystackSetupOptions) => PaystackHandler }
 
 declare global {
   interface Window {
@@ -40,7 +35,7 @@ declare global {
 
 type InitializedPayment = {
   email: string
-  amount: number // naira (we convert to kobo for Paystack)
+  amount: number   // naira — we convert to kobo when calling Paystack
   reference: string
 }
 
@@ -68,16 +63,11 @@ export default function PaymentPage() {
       'script[src="https://js.paystack.co/v1/inline.js"]',
     )
     if (existing) return
-
     const script = document.createElement('script')
     script.src = 'https://js.paystack.co/v1/inline.js'
     script.async = true
     document.body.appendChild(script)
-
-    return () => {
-      // Optional: keep script for other pages; removing is fine too.
-      script.remove()
-    }
+    return () => { script.remove() }
   }, [])
 
   // Initialize payment for this order
@@ -102,7 +92,6 @@ export default function PaymentPage() {
 
         if (data.success) {
           setPaymentData(data.data)
-          // Auto-open paystack shortly after init
           setTimeout(() => startPayment(data.data), 300)
         } else {
           setError(data.error || 'Failed to initialize payment')
@@ -120,17 +109,13 @@ export default function PaymentPage() {
   }, [orderId])
 
   const startPayment = (payment: InitializedPayment) => {
-    if (!orderId) {
-      setError('No order ID provided')
-      return
-    }
+    if (!orderId) { setError('No order ID provided'); return }
 
     const key = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY
     if (!key) {
       setError('Paystack public key is missing. Set NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY.')
       return
     }
-
     if (!window.PaystackPop) {
       setError('Payment gateway not loaded. Please refresh and try again.')
       return
@@ -139,22 +124,17 @@ export default function PaymentPage() {
     const handler = window.PaystackPop.setup({
       key,
       email: payment.email,
-      amount: Math.round(payment.amount * 100), // naira -> kobo
+      amount: Math.round(payment.amount * 100), // naira → kobo
       ref: payment.reference,
       onClose: () => setError('Payment was cancelled'),
-      onSuccess: (transaction) => {
-        verifyPayment(transaction.reference)
-      },
+      onSuccess: (transaction) => verifyPayment(transaction.reference),
     })
 
     handler.openIframe()
   }
 
   const verifyPayment = async (reference: string) => {
-    if (!orderId) {
-      setError('No order ID provided')
-      return
-    }
+    if (!orderId) { setError('No order ID provided'); return }
 
     try {
       setError(null)
@@ -225,7 +205,7 @@ export default function PaymentPage() {
                 </div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">Complete Payment</h2>
                 <p className="text-gray-600 mb-6">
-                  A payment window should have opened. If it didn&apos;t, click the button below.
+                  A payment window should have opened. If it didn&apos;t, click below.
                 </p>
                 <Button
                   onClick={() => startPayment(paymentData)}

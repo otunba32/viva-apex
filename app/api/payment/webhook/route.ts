@@ -1,48 +1,58 @@
-import crypto from 'crypto';
-import { prisma } from '@/lib/prisma';
-import { OrderStatus } from '@prisma/client';
-import { sendOrderConfirmationEmail } from '@/lib/email';
+import crypto from 'crypto'
+import { prisma } from '@/lib/prisma'
+import { OrderStatus } from '@prisma/client'
+import { sendOrderConfirmationEmail } from '@/lib/email'
 
 export async function POST(request: Request) {
-  const body = await request.text();
+  const body = await request.text()
+
   const hash = crypto
     .createHmac('sha512', process.env.PAYSTACK_SECRET_KEY!)
     .update(body)
-    .digest('hex');
+    .digest('hex')
 
-  const signature = request.headers.get('x-paystack-signature');
+  const signature = request.headers.get('x-paystack-signature')
 
   if (hash !== signature) {
-    return new Response('Invalid signature', { status: 401 });
+    return new Response('Invalid signature', { status: 401 })
   }
 
-  const event = JSON.parse(body);
+  const event = JSON.parse(body)
 
   if (event.event === 'charge.success') {
-    // Guard: skip if already paid (prevents duplicate emails)
-    const existingOrder = await prisma.order.findUnique({
-      where: { id: event.data.reference },
-    });
+    const paystackReference = event.data.reference
+    // ✅ order_id was stored in metadata during initialize
+    const orderId = event.data.metadata?.order_id
 
-    if (existingOrder?.status === OrderStatus.PAID) {
-      return new Response('OK', { status: 200 });
+    if (!orderId) {
+      console.error('[Webhook] No order_id in metadata for reference:', paystackReference)
+      return new Response('OK', { status: 200 })
     }
 
-    // Update order and fetch items for email
+    // ✅ Look up by orderId (DB primary key), not by Paystack reference
+    const existingOrder = await prisma.order.findUnique({
+      where: { id: orderId },
+    })
+
+    // Guard: skip if already paid (prevents duplicate emails)
+    if (existingOrder?.status === OrderStatus.PAID) {
+      return new Response('OK', { status: 200 })
+    }
+
+    // ✅ Update by orderId, save the Paystack reference separately
     const updatedOrder = await prisma.order.update({
-      where: { id: event.data.reference },
+      where: { id: orderId },
       data: {
         status: OrderStatus.PAID,
-        paystackRef: event.data.reference,
+        paystackRef: paystackReference,
       },
       include: {
         items: {
           include: { product: true },
         },
       },
-    });
+    })
 
-    // Send confirmation email (non-blocking)
     try {
       await sendOrderConfirmationEmail({
         customerName: updatedOrder.customerName,
@@ -57,11 +67,11 @@ export async function POST(request: Request) {
           quantity: item.quantity,
           unitPrice: item.unitPrice,
         })),
-      });
+      })
     } catch (emailError) {
-      console.error('[Webhook] Email failed to send:', emailError);
+      console.error('[Webhook] Email failed to send:', emailError)
     }
   }
 
-  return new Response('OK', { status: 200 });
+  return new Response('OK', { status: 200 })
 }

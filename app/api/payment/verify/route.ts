@@ -1,9 +1,9 @@
-import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { OrderStatus } from '@prisma/client';
-import { sendOrderConfirmationEmail } from '@/lib/email';
+import { NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
+import { OrderStatus } from '@prisma/client'
+import { sendOrderConfirmationEmail } from '@/lib/email'
 
-const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
+const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY
 
 export async function POST(request: Request) {
   try {
@@ -11,65 +11,55 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { success: false, error: 'Paystack secret key not configured' },
         { status: 500 }
-      );
+      )
     }
 
-    const body = await request.json();
-    const { reference } = body;
+    const { reference, orderId } = await request.json()
 
-    if (!reference) {
+    if (!reference || !orderId) {
       return NextResponse.json(
-        { success: false, error: 'Reference is required' },
+        { success: false, error: 'Reference and orderId are required' },
         { status: 400 }
-      );
+      )
     }
 
-    // Guard: already paid — return early and skip email
-    const existingOrder = await prisma.order.findUnique({
-      where: { id: reference },
-    });
+    // ✅ Look up by orderId (the DB primary key), not by reference
+    const existingOrder = await prisma.order.findUnique({ where: { id: orderId } })
+
     if (existingOrder?.status === OrderStatus.PAID) {
-      return NextResponse.json({
-        success: true,
-        data: { status: 'success', order: existingOrder },
-      });
+      return NextResponse.json({ success: true, data: { status: 'success', order: existingOrder } })
     }
 
+    // Verify with Paystack using the Paystack reference
     const response = await fetch(
       `https://api.paystack.co/transaction/verify/${reference}`,
       {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
-        },
+        headers: { Authorization: `Bearer ${PAYSTACK_SECRET_KEY}` },
       }
-    );
+    )
 
-    const data = await response.json();
+    const data = await response.json()
 
     if (!data.status) {
       return NextResponse.json(
         { success: false, error: 'Payment verification failed' },
         { status: 400 }
-      );
+      )
     }
 
     if (data.data.status === 'success') {
-      // Update order and include items + product names for email
+      // ✅ Update order by orderId, store the Paystack reference
       const updatedOrder = await prisma.order.update({
-        where: { id: reference },
+        where: { id: orderId },
         data: {
           status: OrderStatus.PAID,
           paystackRef: data.data.reference,
         },
         include: {
-          items: {
-            include: { product: true },
-          },
+          items: { include: { product: true } },
         },
-      });
+      })
 
-      // Send confirmation email (non-blocking — don't fail the request if email fails)
       try {
         await sendOrderConfirmationEmail({
           customerName: updatedOrder.customerName,
@@ -84,32 +74,29 @@ export async function POST(request: Request) {
             quantity: item.quantity,
             unitPrice: item.unitPrice,
           })),
-        });
+        })
       } catch (emailError) {
-        // Log but don't fail the payment response
-        console.error('[Payment Verify] Email failed to send:', emailError);
+        console.error('[Payment Verify] Email failed:', emailError)
       }
 
-      return NextResponse.json({
-        success: true,
-        data: { status: 'success', order: updatedOrder },
-      });
+      return NextResponse.json({ success: true, data: { status: 'success', order: updatedOrder } })
     } else {
+      // ✅ Also update by orderId
       await prisma.order.update({
-        where: { id: reference },
+        where: { id: orderId },
         data: { status: OrderStatus.FAILED },
-      });
+      })
 
       return NextResponse.json(
         { success: false, error: 'Payment was not successful' },
         { status: 400 }
-      );
+      )
     }
   } catch (error) {
-    console.error('[Payment Verify API] Error:', error);
+    console.error('[Payment Verify API] Error:', error)
     return NextResponse.json(
       { success: false, error: 'Failed to verify payment' },
       { status: 500 }
-    );
+    )
   }
 }

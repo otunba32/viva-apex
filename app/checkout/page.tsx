@@ -5,6 +5,7 @@ import { PageTransition } from '@/components/PageTransition'
 import { useCart } from '@/context/CartContext'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import Image from 'next/image'
 import { ArrowLeft } from 'lucide-react'
 import { DELIVERY_ZONES, type DeliveryZone } from '@/lib/delivery'
 
@@ -279,12 +280,22 @@ export default function CheckoutPage() {
                 {/* Items */}
                 <div className="space-y-3 mb-6 pb-6 border-b border-gray-200">
                   {items.map((item) => (
-                    <div key={item.id} className="flex justify-between">
-                      <div>
-                        <p className="text-gray-700 font-medium">{item.name}</p>
+                    <div key={item.id} className="flex items-center gap-3">
+                      {/* ✅ Fixed: next/image instead of <img> */}
+                      <div className="relative w-12 h-12 flex-shrink-0">
+                        <Image
+                          src={item.image ?? '/placeholder.png'}
+                          alt={item.name}
+                          fill
+                          className="rounded-lg object-cover"
+                          sizes="48px"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-gray-700 font-medium truncate">{item.name}</p>
                         <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
                       </div>
-                      <p className="font-semibold text-green-600">
+                      <p className="font-semibold text-green-600 flex-shrink-0">
                         ₦{(item.price * item.quantity).toLocaleString()}
                       </p>
                     </div>

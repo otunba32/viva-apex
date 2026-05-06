@@ -1,5 +1,6 @@
+// app/products/ProductsClient.tsx
 'use client'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Fish, Drumstick, Bird, Search, SlidersHorizontal } from 'lucide-react'
@@ -33,54 +34,21 @@ const FILTERS: {
   { key: 'fish', label: 'Fish', icon: Fish },
 ]
 
-const brand = {
-  red: '#D62828',
-  deepRed: '#A61E1E',
-  orange: '#F77F00',
-}
+const brand = { red: '#D62828', deepRed: '#A61E1E', orange: '#F77F00' }
 
-export default function ProductsPage() {
+export default function ProductsClient({ products }: { products: Product[] }) {
   const searchParams = useSearchParams()
-  const [products, setProducts] = useState<Product[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [activeFilter, setActiveFilter] = useState<FilterKey>('all')
-  const [searchTerm, setSearchTerm] = useState('')
 
-  // Read URL params on load
-  useEffect(() => {
-    const category = searchParams.get('category') as FilterKey | null
-    const search = searchParams.get('search')
-    if (category && ['chicken', 'turkey', 'fish'].includes(category)) {
-      setActiveFilter(category)
-    }
-    if (search) {
-      setSearchTerm(search)
-    }
-  }, [searchParams])
+  // Derive initial state from URL params — no useEffect needed
+  const rawCategory = searchParams.get('category') as FilterKey | null
+  const rawSearch = searchParams.get('search') ?? ''
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true)
-        setError(null)
-        const response = await fetch('/api/products')
-        if (!response.ok) throw new Error('Failed to fetch products')
-        const data = await response.json()
-        if (data.success) {
-          setProducts(data.data)
-        } else {
-          setError('Failed to fetch products')
-        }
-      } catch (err) {
-        setError('An error occurred while fetching products')
-        console.error(err)
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchProducts()
-  }, [])
+  const [activeFilter, setActiveFilter] = useState<FilterKey>(
+    rawCategory && ['chicken', 'turkey', 'fish'].includes(rawCategory)
+      ? rawCategory
+      : 'all'
+  )
+  const [searchTerm, setSearchTerm] = useState(rawSearch)
 
   const filteredProducts = useMemo(() => {
     let result = products
@@ -111,17 +79,18 @@ export default function ProductsPage() {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-gradient-to-b from-orange-50/40 via-white to-white pt-6 pb-14">
+      <div className="min-h-screen bg-linear-to-b from-orange-50/40 via-white to-white pt-6 pb-14">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+
           {/* Header Banner */}
           <motion.div
             initial={{ opacity: 0, y: -18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45 }}
-            className="relative overflow-hidden rounded-[2rem] border border-orange-100 bg-white shadow-sm"
+            className="relative overflow-hidden rounded-4xl border border-orange-100 bg-white shadow-sm"
           >
             <div
-              className="absolute inset-0 opacity-100"
+              className="absolute inset-0"
               style={{
                 background:
                   'linear-gradient(135deg, rgba(214,40,40,0.06) 0%, rgba(247,127,0,0.08) 100%)',
@@ -140,7 +109,6 @@ export default function ProductsPage() {
                 </h1>
                 <p className="mt-4 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg">
                   Browse our complete selection of chicken, turkey and fish.
-                  Shop for family meals, events, food prep and bulk supply.
                 </p>
               </div>
               <div className="mt-8 grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
@@ -157,7 +125,7 @@ export default function ProductsPage() {
                     <button
                       type="button"
                       onClick={() => setSearchTerm('')}
-                      className="text-slate-400 hover:text-slate-600 text-xs"
+                      className="text-xs text-slate-400 hover:text-slate-600"
                     >
                       Clear
                     </button>
@@ -205,9 +173,7 @@ export default function ProductsPage() {
                   {filter.label}
                   <span
                     className={`rounded-full px-2 py-0.5 text-xs ${
-                      isActive
-                        ? 'bg-white/20 text-white'
-                        : 'bg-slate-100 text-slate-600'
+                      isActive ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
                     }`}
                   >
                     {counts[filter.key]}
@@ -218,21 +184,7 @@ export default function ProductsPage() {
           </motion.div>
 
           {/* Products Grid */}
-          {loading ? (
-            <div className="flex items-center justify-center py-20">
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 1.2, repeat: Infinity, ease: 'linear' }}
-                className="h-12 w-12 rounded-full border-4 border-orange-200 border-t-red-600"
-              />
-            </div>
-          ) : error ? (
-            <div className="py-16 text-center">
-              <div className="mx-auto max-w-xl rounded-[1.5rem] border border-red-100 bg-red-50 px-6 py-8">
-                <p className="text-lg font-semibold text-red-700">{error}</p>
-              </div>
-            </div>
-          ) : filteredProducts.length > 0 ? (
+          {filteredProducts.length > 0 ? (
             <div className="mt-10">
               <StaggerContainer>
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
@@ -246,17 +198,14 @@ export default function ProductsPage() {
             </div>
           ) : (
             <div className="py-16 text-center">
-              <div className="mx-auto max-w-xl rounded-[1.5rem] border border-orange-100 bg-orange-50/60 px-6 py-10">
+              <div className="mx-auto max-w-xl rounded-3xl border border-orange-100 bg-orange-50/60 px-6 py-10">
                 <h3 className="text-2xl font-bold text-slate-900">No products found</h3>
                 <p className="mt-3 text-slate-600">
                   Try switching categories or searching with a different name.
                 </p>
                 <Button
                   type="button"
-                  onClick={() => {
-                    setActiveFilter('all')
-                    setSearchTerm('')
-                  }}
+                  onClick={() => { setActiveFilter('all'); setSearchTerm('') }}
                   className="mt-6 rounded-full px-5 py-2.5 text-sm font-semibold text-white"
                   style={{ backgroundColor: brand.red }}
                 >

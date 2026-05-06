@@ -64,13 +64,12 @@ export const stats = [
   { value: 'Secure', label: 'Checkout Flow' },
 ]
 
+// Keep animation variants here so components import from one place
 export const container = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: {
-      staggerChildren: 0.12,
-    },
+    transition: { staggerChildren: 0.12 },
   },
 }
 

@@ -1,17 +1,17 @@
 'use client';
-
 import { useEffect, useState } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { PageTransition } from '@/components/PageTransition';
 import { Button } from '@/components/ui/button';
+import { useCart } from '@/context/CartContext';
 import Link from 'next/link';
 
 interface Order {
   id: string;
   customerName: string;
   customerEmail: string;
-  customerPhone: string; 
+  customerPhone: string;
   address: string;
   city: string;
   totalAmount: number;
@@ -21,8 +21,8 @@ interface Order {
 
 export default function SuccessPage() {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const orderId = searchParams.get('orderId');
+  const { clearCart } = useCart();
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -39,9 +39,9 @@ export default function SuccessPage() {
         setLoading(true);
         const response = await fetch(`/api/orders?orderId=${orderId}`);
         const data = await response.json();
-
         if (data.success) {
           setOrder(data.data);
+          clearCart(); // ✅ guaranteed clear on success page load
         } else {
           setError('Failed to fetch order details');
         }
@@ -54,6 +54,7 @@ export default function SuccessPage() {
     };
 
     fetchOrder();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderId]);
 
   const successVariants = {
@@ -61,10 +62,7 @@ export default function SuccessPage() {
     visible: {
       scale: 1,
       opacity: 1,
-      transition: {
-        duration: 0.5,
-        ease: 'easeOut' as const,
-      },
+      transition: { duration: 0.5, ease: 'easeOut' as const },
     },
   };
 
@@ -72,10 +70,7 @@ export default function SuccessPage() {
     hidden: { pathLength: 0 },
     visible: {
       pathLength: 1,
-      transition: {
-        duration: 0.6,
-        ease: 'easeInOut' as const,
-      },
+      transition: { duration: 0.6, ease: 'easeInOut' as const },
     },
   };
 
@@ -128,9 +123,6 @@ export default function SuccessPage() {
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
-                  variants={checkmarkVariants}
-                  initial="hidden"
-                  animate="visible"
                 >
                   <motion.path
                     strokeLinecap="round"
@@ -167,19 +159,22 @@ export default function SuccessPage() {
                 className="bg-white rounded-lg shadow-md p-8 mb-8"
               >
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">Order Details</h2>
-
                 <div className="space-y-6">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <p className="text-sm text-gray-600 mb-1">Order ID</p>
-                      <p className="font-mono text-lg font-semibold text-gray-900">
+                      <p className="font-mono text-sm font-semibold text-gray-900 break-all">
                         {orderId}
                       </p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-600 mb-1">Order Date</p>
-                      <p className="text-lg font-semibold text-gray-900">
-                        {new Date(order.createdAt).toLocaleDateString()}
+                      <p className="text-base font-semibold text-gray-900">
+                        {new Date(order.createdAt).toLocaleDateString('en-NG', {
+                          day: 'numeric',
+                          month: 'long',
+                          year: 'numeric',
+                        })}
                       </p>
                     </div>
                   </div>
@@ -196,8 +191,10 @@ export default function SuccessPage() {
                         <span className="font-medium">Email:</span> {order.customerEmail}
                       </p>
                       <p>
-                        <span className="font-medium">Address:</span> {order.address},
-                        {order.city}
+                        <span className="font-medium">Phone:</span> {order.customerPhone}
+                      </p>
+                      <p>
+                        <span className="font-medium">Address:</span> {order.address}, {order.city}
                       </p>
                     </div>
                   </div>
@@ -213,7 +210,7 @@ export default function SuccessPage() {
 
                   <div className="border-t border-gray-200 pt-6">
                     <div className="flex items-center">
-                      <div className="w-3 h-3 bg-green-600 rounded-full mr-3"></div>
+                      <div className="w-3 h-3 bg-green-600 rounded-full mr-3" />
                       <p className="text-gray-700">
                         <span className="font-medium">Status:</span> Payment Confirmed
                       </p>
@@ -229,20 +226,25 @@ export default function SuccessPage() {
                 transition={{ duration: 0.5, delay: 0.4 }}
                 className="bg-blue-50 rounded-lg p-8 mb-8"
               >
-                <h3 className="font-semibold text-gray-900 mb-4">What`&apos;`s Next?</h3>
+                <h3 className="font-semibold text-gray-900 mb-4">What&apos;s Next?</h3>
                 <ul className="space-y-3 text-gray-700">
                   <li className="flex items-start">
                     <span className="text-blue-600 mr-3 font-bold">1</span>
-                    <span>A confirmation email has been sent to {order.customerEmail}</span>
+                    <span>
+                      A confirmation email has been sent to{' '}
+                      <span className="font-medium">{order.customerEmail}</span>
+                    </span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-blue-600 mr-3 font-bold">2</span>
-                    <span>Your order will be processed and shipped within 24-48 hours</span>
+                    <span>
+                      Your order will be processed and delivered within 24–48 hours
+                    </span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-blue-600 mr-3 font-bold">3</span>
                     <span>
-                      You will receive a tracking number via email once your order ships
+                      For any questions, contact us with your Order ID
                     </span>
                   </li>
                 </ul>
@@ -253,7 +255,7 @@ export default function SuccessPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.5 }}
-                className="space-y-4 sm:space-y-0 sm:flex gap-4"
+                className="flex flex-col sm:flex-row gap-4"
               >
                 <Link href="/" className="flex-1">
                   <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">

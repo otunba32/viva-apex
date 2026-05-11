@@ -32,17 +32,24 @@ export default function FeaturedProductsSection() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-10 flex items-end justify-between gap-4">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.25em]" style={{ color: brand.deepRed }}>
+            <p
+              className="text-sm font-semibold uppercase tracking-[0.25em]"
+              style={{ color: brand.deepRed }}
+            >
               Featured Products
             </p>
             <h2 className="mt-2 text-3xl font-black tracking-tight sm:text-4xl">
               Customer favorites
             </h2>
           </div>
-          <Link href="/products" className="hidden text-sm font-semibold text-slate-700 sm:inline-flex">
+          <Link
+            href="/products"
+            className="hidden text-sm font-semibold text-slate-700 sm:inline-flex"
+          >
             View all products <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
         </div>
+
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -50,7 +57,7 @@ export default function FeaturedProductsSection() {
           variants={container}
           className="grid gap-6 md:grid-cols-3"
         >
-          {products.map((product) => (
+          {products.map((product, index) => (
             <motion.div
               key={product.id}
               variants={item}
@@ -63,6 +70,8 @@ export default function FeaturedProductsSection() {
                   fill
                   sizes="(max-width: 768px) 100vw, 33vw"
                   className="object-cover"
+                  // ✅ first product card is likely the LCP element
+                  priority={index === 0}
                 />
               </div>
               <div className="p-6">
@@ -75,6 +84,7 @@ export default function FeaturedProductsSection() {
                 </div>
                 <h3 className="text-xl font-bold text-slate-900">{product.name}</h3>
                 <div className="mt-4 flex items-center justify-between">
+                  {/* ✅ Fixed broken â‚¦ encoding */}
                   <p className="text-2xl font-black" style={{ color: brand.deepRed }}>
                     ₦{product.price.toLocaleString()}
                   </p>

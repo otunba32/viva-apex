@@ -1,6 +1,7 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
+  allowedDevOrigins: ['shine-coauthor-threaten.ngrok-free.dev'],
   images: {
     remotePatterns: [
       {
@@ -12,27 +13,33 @@ const nextConfig: NextConfig = {
     minimumCacheTTL: 60 * 60 * 24 * 7,    // cache images for 7 days
   },
   async headers() {
-    return [
-      {
-        source: '/products/:path*',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=3600, stale-while-revalidate=86400',
-          },
-        ],
-      },
-      {
-        source: '/api/products/:path*',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, s-maxage=60, stale-while-revalidate=300',
-          },
-        ],
-      },
-    ]
-  },
+  return [
+    {
+      source: '/api/:path*',
+      headers: [
+        { key: 'ngrok-skip-browser-warning', value: 'true' },
+      ],
+    },
+    {
+      source: '/products/:path*',
+      headers: [
+        {
+          key: 'Cache-Control',
+          value: 'public, max-age=3600, stale-while-revalidate=86400',
+        },
+      ],
+    },
+    {
+      source: '/api/products/:path*',
+      headers: [
+        {
+          key: 'Cache-Control',
+          value: 'public, s-maxage=60, stale-while-revalidate=300',
+        },
+      ],
+    },
+  ]
+},
 }
 
 export default nextConfig

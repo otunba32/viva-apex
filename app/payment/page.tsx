@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { PageTransition } from '@/components/PageTransition'
@@ -28,14 +28,12 @@ type PaystackHandler = { openIframe: () => void }
 type PaystackPop = { setup: (options: PaystackSetupOptions) => PaystackHandler }
 
 declare global {
-  interface Window {
-    PaystackPop?: PaystackPop
-  }
+  interface Window { PaystackPop?: PaystackPop }
 }
 
 type InitializedPayment = {
   email: string
-  amount: number   // naira — we convert to kobo when calling Paystack
+  amount: number
   reference: string
 }
 
@@ -56,6 +54,8 @@ export default function PaymentPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [paymentData, setPaymentData] = useState<InitializedPayment | null>(null)
+  const [statusMessage, setStatusMessage] = useState('Please wait while we initialize your payment...')
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   // Load Paystack script once
   useEffect(() => {
@@ -70,12 +70,16 @@ export default function PaymentPage() {
     return () => { script.remove() }
   }, [])
 
-  // Initialize payment for this order
+  // Cleanup polling on unmount
   useEffect(() => {
-    if (!orderId) {
-      setError('No order ID provided')
-      return
+    return () => {
+      if (pollRef.current) clearInterval(pollRef.current)
     }
+  }, [])
+
+  // Initialize payment
+  useEffect(() => {
+    if (!orderId) { setError('No order ID provided'); return }
 
     const initializePayment = async () => {
       try {
@@ -108,12 +112,49 @@ export default function PaymentPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderId])
 
+  // ✅ Poll order status until PAID or timeout
+  const startPolling = () => {
+    if (!orderId) return
+    setStatusMessage('Confirming your payment...')
+
+    let attempts = 0
+    const maxAttempts = 20 // 20 × 3s = 60s timeout
+
+    pollRef.current = setInterval(async () => {
+      attempts++
+      try {
+        const res = await fetch(`/api/orders/status?orderId=${orderId}`)
+        const data = await res.json()
+
+        if (data.success && data.data.status === 'PAID') {
+          if (pollRef.current) clearInterval(pollRef.current)
+          clearCart()
+          router.push(`/success?orderId=${encodeURIComponent(orderId)}`)
+          return
+        }
+
+        if (data.success && data.data.status === 'FAILED') {
+          if (pollRef.current) clearInterval(pollRef.current)
+          setError('Payment failed. Please try again.')
+          return
+        }
+      } catch (err) {
+        console.error('[Poll] Error:', err)
+      }
+
+      if (attempts >= maxAttempts) {
+        if (pollRef.current) clearInterval(pollRef.current)
+        setError('Payment confirmation timed out. If you were charged, please contact us with your order ID.')
+      }
+    }, 3000)
+  }
+
   const startPayment = (payment: InitializedPayment) => {
     if (!orderId) { setError('No order ID provided'); return }
 
     const key = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY
     if (!key) {
-      setError('Paystack public key is missing. Set NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY.')
+      setError('Paystack public key is missing.')
       return
     }
     if (!window.PaystackPop) {
@@ -126,19 +167,26 @@ export default function PaymentPage() {
       email: payment.email,
       amount: Math.round(payment.amount * 100), // naira → kobo
       ref: payment.reference,
-      onClose: () => setError('Payment was cancelled'),
-      onSuccess: (transaction) => verifyPayment(transaction.reference),
+      onClose: () => {
+        // ✅ Start polling when popup closes — catches both success and webhook-confirmed payments
+        startPolling()
+      },
+      onSuccess: (transaction) => {
+        // ✅ Also verify directly if onSuccess fires
+        verifyPayment(transaction.reference)
+      },
     })
 
     handler.openIframe()
   }
 
   const verifyPayment = async (reference: string) => {
-    if (!orderId) { setError('No order ID provided'); return }
+    if (!orderId) return
 
     try {
       setError(null)
       setLoading(true)
+      setStatusMessage('Verifying your payment...')
 
       const res = await fetch('/api/payment/verify', {
         method: 'POST',
@@ -152,11 +200,12 @@ export default function PaymentPage() {
         clearCart()
         router.push(`/success?orderId=${encodeURIComponent(orderId)}`)
       } else {
-        setError(data.error || 'Payment verification failed')
+        // Fall back to polling in case webhook already handled it
+        startPolling()
       }
     } catch (err) {
       console.error(err)
-      setError('An error occurred while verifying payment')
+      startPolling() // fallback to polling
     } finally {
       setLoading(false)
     }
@@ -194,9 +243,7 @@ export default function PaymentPage() {
                   className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full mx-auto mb-4"
                 />
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">Processing Payment</h2>
-                <p className="text-gray-600">
-                  Please wait while we initialize your payment...
-                </p>
+                <p className="text-gray-600">{statusMessage}</p>
               </>
             ) : (
               <>

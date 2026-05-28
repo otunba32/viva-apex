@@ -80,7 +80,16 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     )
   }
 
-  const clearCart = () => setItems([])
+  const clearCart = () => {
+    setItems([])
+    // ✅ clear localStorage immediately — don't wait for useEffect
+    try {
+      localStorage.removeItem('cart')
+    } catch (error) {
+      console.error('Failed to clear cart from localStorage:', error)
+    }
+  }
+
 
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0)

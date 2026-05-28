@@ -1,34 +1,55 @@
 'use client'
-import { useEffect, useState } from 'react'
+
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowRight, Fish, Snowflake } from 'lucide-react'
-import { brand, container, item } from '@/lib/home-data'
 
-interface Product {
-  id: string
-  name: string
-  slug: string
-  price: number
-  image: string
-  category: string
-}
+import { brand, container, item } from '@/lib/home-data'
+import { useFeaturedProducts } from '@/hooks/useProducts'
 
 export default function FeaturedProductsSection() {
-  const [products, setProducts] = useState<Product[]>([])
+  const {
+    data: products = [],
+    isLoading,
+    isError,
+  } = useFeaturedProducts(3)
 
-  useEffect(() => {
-    fetch('/api/products?featured=true&limit=3')
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.success) setProducts(data.data)
-      })
-      .catch(console.error)
-  }, [])
+  if (isLoading) {
+    return (
+      <section
+        className="py-16"
+        style={{ backgroundColor: brand.cream }}
+      >
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-slate-500">
+            Loading featured products...
+          </p>
+        </div>
+      </section>
+    )
+  }
+
+  if (isError) {
+    return (
+      <section
+        className="py-16"
+        style={{ backgroundColor: brand.cream }}
+      >
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-red-500">
+            Failed to load products
+          </p>
+        </div>
+      </section>
+    )
+  }
 
   return (
-    <section className="py-16" style={{ backgroundColor: brand.cream }}>
+    <section
+      className="py-16"
+      style={{ backgroundColor: brand.cream }}
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-10 flex items-end justify-between gap-4">
           <div>
@@ -38,15 +59,18 @@ export default function FeaturedProductsSection() {
             >
               Featured Products
             </p>
+
             <h2 className="mt-2 text-3xl font-black tracking-tight sm:text-4xl">
               Customer favorites
             </h2>
           </div>
+
           <Link
             href="/products"
             className="hidden text-sm font-semibold text-slate-700 sm:inline-flex"
           >
-            View all products <ArrowRight className="ml-2 h-4 w-4" />
+            View all products
+            <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
         </div>
 
@@ -65,29 +89,40 @@ export default function FeaturedProductsSection() {
             >
               <div className="relative h-72 overflow-hidden">
                 <Image
-                  src={product.image}
+                  src={product.image ?? '/placeholder.png'}
                   alt={product.name}
                   fill
                   sizes="(max-width: 768px) 100vw, 33vw"
                   className="object-cover"
-                  // ✅ first product card is likely the LCP element
                   priority={index === 0}
                 />
               </div>
+
               <div className="p-6">
                 <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-orange-50 px-3 py-1 text-xs font-semibold text-orange-700">
-                  {product.category === 'fish'
-                    ? <Fish className="h-3.5 w-3.5" />
-                    : <Snowflake className="h-3.5 w-3.5" />
-                  }
-                  <span className="capitalize">{product.category}</span>
+                  {product.category === 'fish' ? (
+                    <Fish className="h-3.5 w-3.5" />
+                  ) : (
+                    <Snowflake className="h-3.5 w-3.5" />
+                  )}
+
+                  <span className="capitalize">
+                    {product.category}
+                  </span>
                 </div>
-                <h3 className="text-xl font-bold text-slate-900">{product.name}</h3>
+
+                <h3 className="text-xl font-bold text-slate-900">
+                  {product.name}
+                </h3>
+
                 <div className="mt-4 flex items-center justify-between">
-                  {/* ✅ Fixed broken â‚¦ encoding */}
-                  <p className="text-2xl font-black" style={{ color: brand.deepRed }}>
+                  <p
+                    className="text-2xl font-black"
+                    style={{ color: brand.deepRed }}
+                  >
                     ₦{product.price.toLocaleString()}
                   </p>
+
                   <Link
                     href={`/products/${product.slug}`}
                     className="inline-flex items-center rounded-xl px-4 py-2 text-sm font-semibold text-white transition"

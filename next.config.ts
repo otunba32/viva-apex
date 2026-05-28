@@ -12,10 +12,10 @@ const nextConfig: NextConfig = {
     formats: ['image/avif', 'image/webp'], // serve modern formats
     minimumCacheTTL: 60 * 60 * 24 * 7,    // cache images for 7 days
   },
-  async headers() {
+ async headers() {
   return [
     {
-      source: '/api/:path*',
+      source: '/:path*',  // ✅ applies to ALL routes, not just /api
       headers: [
         { key: 'ngrok-skip-browser-warning', value: 'true' },
       ],

@@ -5,7 +5,6 @@ import { useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Fish, Drumstick, Bird, Search, SlidersHorizontal } from 'lucide-react'
 import { PageTransition } from '@/components/PageTransition'
-import { StaggerContainer, StaggerItem } from '@/components/StaggerContainer'
 import { ProductCard } from '@/components/ProductCard'
 import { Button } from '@/components/ui/button'
 
@@ -13,7 +12,7 @@ interface Product {
   id: string
   name: string
   price: number
-  image: string
+  image: string | null
   slug: string
   stock: number
   category: string
@@ -28,11 +27,11 @@ const FILTERS: {
   label: string
   icon?: React.ComponentType<{ className?: string }>
 }[] = [
-  { key: 'all', label: 'All' },
-  { key: 'chicken', label: 'Chicken', icon: Drumstick },
-  { key: 'turkey', label: 'Turkey', icon: Bird },
-  { key: 'fish', label: 'Fish', icon: Fish },
-]
+    { key: 'all', label: 'All' },
+    { key: 'chicken', label: 'Chicken', icon: Drumstick },
+    { key: 'turkey', label: 'Turkey', icon: Bird },
+    { key: 'fish', label: 'Fish', icon: Fish },
+  ]
 
 const brand = { red: '#D62828', deepRed: '#A61E1E', orange: '#F77F00' }
 
@@ -155,26 +154,24 @@ export default function ProductsClient({ products }: { products: Product[] }) {
                   key={filter.key}
                   type="button"
                   onClick={() => setActiveFilter(filter.key)}
-                  className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition ${
-                    isActive
-                      ? 'text-white shadow-md'
-                      : 'border border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
-                  }`}
+                  className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition ${isActive
+                    ? 'text-white shadow-md'
+                    : 'border border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+                    }`}
                   style={
                     isActive
                       ? {
-                          background:
-                            'linear-gradient(135deg, #A61E1E 0%, #D62828 60%, #F77F00 100%)',
-                        }
+                        background:
+                          'linear-gradient(135deg, #A61E1E 0%, #D62828 60%, #F77F00 100%)',
+                      }
                       : undefined
                   }
                 >
                   {Icon ? <Icon className="h-4 w-4" /> : null}
                   {filter.label}
                   <span
-                    className={`rounded-full px-2 py-0.5 text-xs ${
-                      isActive ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
-                    }`}
+                    className={`rounded-full px-2 py-0.5 text-xs ${isActive ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
+                      }`}
                   >
                     {counts[filter.key]}
                   </span>
@@ -186,15 +183,17 @@ export default function ProductsClient({ products }: { products: Product[] }) {
           {/* Products Grid */}
           {filteredProducts.length > 0 ? (
             <div className="mt-10">
-              <StaggerContainer>
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
-                  {filteredProducts.map((product, index) => (
-                    <StaggerItem key={product.id}>
-                      <ProductCard {...product} index={index} />
-                    </StaggerItem>
-                  ))}
-                </div>
-              </StaggerContainer>
+
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
+                {filteredProducts.map((product, index) => (
+                  <ProductCard
+                    key={product.id}
+                    {...product}
+                    image={product.image ?? '/products/full-chicken.jpg'}
+                    index={index}
+                  />
+                ))}
+              </div>
             </div>
           ) : (
             <div className="py-16 text-center">

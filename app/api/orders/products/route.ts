@@ -15,7 +15,7 @@ export async function POST(request: Request) {
       weight,
       description,
       nutrients,
-      storage,
+      // storage,
     } = body
 
     if (!name || !slug || !price || !image || !stock || !category) {
@@ -36,7 +36,7 @@ export async function POST(request: Request) {
         weight,
         description,
         nutrients,
-        storage,
+        // storage,
       },
     })
 

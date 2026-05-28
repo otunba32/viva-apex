@@ -1,24 +1,32 @@
-import { NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
+import { NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
 
-    const category = searchParams.get("category")
-    const limitParam = searchParams.get("limit")
-    const skipParam = searchParams.get("skip")
+    const category = searchParams.get('category')
+    const featuredParam = searchParams.get('featured')
+    const limitParam = searchParams.get('limit')
+    const skipParam = searchParams.get('skip')
 
     const limit = limitParam ? Number(limitParam) : undefined
     const skip = skipParam ? Number(skipParam) : 0
-    const where = category ? { category } : {}
+
+    const where: {
+      category?: string
+      featured?: boolean
+    } = {}
+
+    if (category) where.category = category
+    if (featuredParam === 'true') where.featured = true
 
     const [products, total] = await Promise.all([
       prisma.product.findMany({
         where,
         take: limit,
         skip,
-        orderBy: { createdAt: "desc" },
+        orderBy: { createdAt: 'desc' },
       }),
       prisma.product.count({ where }),
     ])
@@ -34,14 +42,15 @@ export async function GET(request: Request) {
       },
     })
   } catch (error) {
-    console.error("[Products API] Full Error:", error)
+    console.error('[Products API] Full Error:', error)
+
     return NextResponse.json(
       {
         success: false,
-        error: "Failed to fetch products",
+        error: 'Failed to fetch products',
         details: error instanceof Error ? error.message : String(error),
       },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }

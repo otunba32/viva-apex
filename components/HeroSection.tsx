@@ -93,30 +93,31 @@ export default function HeroSection() {
         </motion.div>
 
         {/* Right — Hero Image */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.96, y: 18 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.65 }}
-          className="relative"
-        >
-          <div className="absolute -left-8 top-10 h-28 w-28 rounded-full bg-white/20 blur-3xl" />
-          <div className="absolute -right-8 bottom-10 h-28 w-28 rounded-full bg-orange-200/40 blur-3xl" />
+        {/* Right — Hero Image */}
+<motion.div
+  initial={{ opacity: 0, scale: 0.96, y: 18 }}
+  animate={{ opacity: 1, scale: 1, y: 0 }}
+  transition={{ duration: 0.65 }}
+  className="relative mx-auto w-full max-w-sm sm:max-w-md lg:max-w-none"
+>
+  <div className="absolute -left-8 top-10 h-28 w-28 rounded-full bg-white/20 blur-3xl" />
+  <div className="absolute -right-8 bottom-10 h-28 w-28 rounded-full bg-orange-200/40 blur-3xl" />
 
-          <div className="relative overflow-hidden rounded-4xl border border-white/20 bg-white/95 p-3 shadow-2xl">
-            <div className="relative h-[520px] overflow-hidden rounded-[1.6rem] bg-slate-100">
-              <Image
-                src="/products/full-chicken.jpg"
-                alt="Viva Apex premium frozen foods"
-                fill
-                priority
-                loading="eager"
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover"
-              />
-              <div className="absolute inset-0 bg-linear-to-t from-slate-950/70 via-slate-950/20 to-transparent" />
-            </div>
-          </div>
-        </motion.div>
+  <div className="relative overflow-hidden rounded-4xl border border-white/20 bg-white/95 p-3 shadow-2xl">
+    <div className="relative h-[300px] overflow-hidden rounded-[1.6rem] bg-slate-100 sm:h-[420px] lg:h-[520px]">
+      <Image
+        src="/products/full-chicken.jpg"
+        alt="Viva Apex premium frozen foods"
+        fill
+        priority
+        sizes="(max-width: 640px) 90vw, (max-width: 1024px) 70vw, 50vw"
+        className="object-contain"
+      />
+
+      <div className="absolute inset-0 bg-linear-to-t from-slate-950/50 via-transparent to-transparent" />
+    </div>
+  </div>
+</motion.div>
 
       </div>
     </section>
